@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Edad Corregida</title>
+    <title>Calculadora de Edad Corregida y Controles</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -12,13 +12,15 @@
         .alert-yellow { background-color: #fefce8; border-left: 4px solid #eab308; color: #854d0e; }
         .alert-red { background-color: #fef2f2; border-left: 4px solid #ef4444; color: #991b1b; }
         .alert-green { background-color: #f0fdf4; border-left: 4px solid #22c55e; color: #166534; }
+        .alert-indigo { background-color: #eef2ff; border-left: 6px solid #6366f1; color: #3730a3; }
+        .app-footer { text-align: center; margin-top: 2rem; font-size: 0.875rem; color: #6b7280; font-weight: 500; padding-bottom: 1rem; }
     </style>
 </head>
-<body class="p-4 md:p-8 flex justify-center items-start min-h-screen">
+<body class="p-4 md:p-8 flex flex-col justify-center items-center min-h-screen">
 
-    <div class="max-w-2xl w-full bg-white rounded-xl shadow-lg p-6 md:p-8">
+    <div class="max-w-3xl w-full bg-white rounded-xl shadow-lg p-6 md:p-8">
         
-        <h1 class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6">Calculadora de Edad Corregida</h1>
+        <h1 class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6">Calculadora de Edad Corregida y Agendamiento</h1>
 
         <!-- Formulario de Entrada -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -45,41 +47,50 @@
             
         </div>
 
-        <button onclick="calcularEdad()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-md transition duration-200 shadow-sm">
-            Calcular Edad
+        <button onclick="calcularEdad()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-md transition duration-200 shadow-sm text-lg">
+            Calcular Edad y Controles
         </button>
 
         <!-- Resultados -->
-        <div id="resultados" class="hidden mt-8 space-y-6">
+        <div id="resultados" class="hidden mt-8 space-y-8">
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-gray-50 rounded-lg p-5 border border-gray-200">
-                    <h3 class="text-xs uppercase tracking-wider font-semibold text-gray-500 mb-1">Edad Cronológica</h3>
-                    <p id="edadCronologica" class="text-lg font-bold text-gray-800">-</p>
+                <div class="bg-gray-50 rounded-lg p-5 border border-gray-200 shadow-sm">
+                    <h3 class="text-sm uppercase tracking-wider font-semibold text-gray-500 mb-1">Edad Cronológica</h3>
+                    <p id="edadCronologica" class="text-2xl font-bold text-gray-800">-</p>
                 </div>
                 
                 <div class="bg-blue-50 rounded-lg p-5 border border-blue-200 shadow-sm">
-                    <h3 class="text-xs uppercase tracking-wider font-semibold text-blue-600 mb-1">Edad Corregida</h3>
-                    <p id="edadCorregida" class="text-xl font-bold text-blue-900">-</p>
+                    <h3 class="text-sm uppercase tracking-wider font-semibold text-blue-600 mb-1">Edad Corregida</h3>
+                    <p id="edadCorregida" class="text-2xl font-bold text-blue-900">-</p>
                 </div>
             </div>
 
+            <!-- Panel de Agendamiento TDA DESTACADO -->
+            <div class="alert-indigo rounded-xl p-6 shadow-md">
+                <h3 class="text-base uppercase tracking-wider font-bold text-indigo-900 mb-4 border-b border-indigo-200 pb-3">Agendamiento de Control (Rayen)</h3>
+                <div id="panelAgendamiento" class="space-y-4">
+                    <!-- Dinámico -->
+                </div>
+                <p class="text-sm mt-4 text-indigo-700 italic">* Calculado automáticamente según la "Edad Efectiva" (Corregida si aplica, Cronológica si es de término o superó límite de corrección).</p>
+            </div>
+
             <!-- Clasificación y Límite -->
-            <div id="panelClasificacion" class="rounded-lg p-4 text-sm leading-relaxed border">
+            <div id="panelClasificacion" class="rounded-lg p-5 text-base leading-relaxed border shadow-sm">
                 <p><strong>Clasificación:</strong> <span id="clasificacionTexto">-</span></p>
                 <p><strong>Criterio de Corrección:</strong> <span id="criterioTexto">-</span></p>
                 <p id="estadoCorreccion" class="mt-2 font-semibold"></p>
             </div>
 
             <!-- Recordatorios Normativos -->
-            <div class="alert-yellow p-4 rounded-lg text-sm">
-                <h4 class="font-bold mb-2 flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            <div class="alert-yellow p-5 rounded-lg text-sm shadow-sm">
+                <h4 class="font-bold text-base mb-2 flex items-center">
+                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                     Recordatorio Clínico
                 </h4>
-                <ul class="list-disc pl-5 space-y-1">
-                    <li><strong>Controles de Salud y Desarrollo (DSM):</strong> Utilizar Edad Corregida.</li>
-                    <li><strong>Programa Nacional de Inmunizaciones (Vacunas):</strong> Utilizar Edad Cronológica.</li>
+                <ul class="list-disc pl-6 space-y-2 text-gray-800">
+                    <li><strong>Controles de Salud y Desarrollo (DSM):</strong> Utilizar Edad Corregida (hasta el límite según prematuridad).</li>
+                    <li><strong>Programa Nacional de Inmunizaciones (Vacunas):</strong> Utilizar siempre Edad Cronológica.</li>
                 </ul>
             </div>
 
@@ -87,8 +98,34 @@
 
     </div>
 
+    <footer class="app-footer">
+        Hecho por Ricardo Muñoz R.
+    </footer>
+
     <script>
-        // Inicializar fecha de evaluación con la fecha actual local
+        // Tabla de controles (Normalizada a meses totales y días para motor de reglas)
+        const tablaControles = [
+            { csi: "Díada", minM: 0, minD: 0, maxM: 0, maxD: 28, tda: "Control Binomio" },
+            { csi: "1 mes", minM: 0, minD: 28, maxM: 1, maxD: 20, tda: "Control sano 1 y 3 meses" },
+            { csi: "2 meses", minM: 1, minD: 21, maxM: 2, maxD: 20, tda: "Control sano 2 meses" },
+            { csi: "3 meses", minM: 2, minD: 21, maxM: 3, maxD: 20, tda: "Control sano 1 y 3 meses" },
+            { csi: "4 meses", minM: 3, minD: 21, maxM: 4, maxD: 29, tda: "Control Sano" },
+            { csi: "5 meses", minM: 5, minD: 0, maxM: 5, maxD: 29, tda: "Control Sano" },
+            { csi: "6 meses", minM: 5, minD: 21, maxM: 7, maxD: 20, tda: "Control Sano" },
+            { csi: "8 meses", minM: 7, minD: 21, maxM: 11, maxD: 20, tda: "Control sano 8 meses" },
+            { csi: "12 meses", minM: 11, minD: 21, maxM: 17, maxD: 20, tda: "Control Sano" },
+            { csi: "18 meses", minM: 17, minD: 21, maxM: 23, maxD: 20, tda: "Control sano 18 meses" },
+            { csi: "2 años", minM: 23, minD: 21, maxM: 35, maxD: 20, tda: "Control Sano" },
+            { csi: "3 años", minM: 35, minD: 21, maxM: 47, maxD: 20, tda: "Control Sano 3 años" },
+            { csi: "3 años y 6 meses", minM: 42, minD: 0, maxM: 47, maxD: 29, tda: "Control Sano" },
+            { csi: "4 años", minM: 48, minD: 0, maxM: 59, maxD: 29, tda: "Control Sano" },
+            { csi: "5 años", minM: 60, minD: 0, maxM: 71, maxD: 29, tda: "Control Sano" },
+            { csi: "6 años", minM: 72, minD: 0, maxM: 83, maxD: 29, tda: "Control Sano" },
+            { csi: "7 años", minM: 84, minD: 0, maxM: 95, maxD: 29, tda: "Control Sano" },
+            { csi: "8 años", minM: 96, minD: 0, maxM: 107, maxD: 29, tda: "Control Sano" },
+            { csi: "9 años", minM: 108, minD: 0, maxM: 119, maxD: 29, tda: "Control Sano" }
+        ];
+
         document.addEventListener('DOMContentLoaded', () => {
             const today = new Date();
             const year = today.getFullYear();
@@ -97,17 +134,14 @@
             document.getElementById('fechaEvaluacion').value = `${year}-${month}-${day}`;
         });
 
-        // Parsear fecha local evitando desfases de zona horaria
         function parseDateLocal(dateString) {
             if (!dateString) return null;
             const [year, month, day] = dateString.split('-');
             return new Date(year, month - 1, day);
         }
 
-        // Calcula la diferencia en años, meses y días entre dos fechas
         function calcularDiferencia(fechaInicio, fechaFin) {
             if (fechaInicio > fechaFin) return null;
-
             let years = fechaFin.getFullYear() - fechaInicio.getFullYear();
             let months = fechaFin.getMonth() - fechaInicio.getMonth();
             let days = fechaFin.getDate() - fechaInicio.getDate();
@@ -121,11 +155,9 @@
                 years--;
                 months += 12;
             }
-
             return { years, months, days, totalMonths: (years * 12) + months };
         }
 
-        // Formatea el objeto de edad en texto legible
         function formatEdad(edadObj) {
             if (!edadObj) return "N/A";
             const partes = [];
@@ -136,6 +168,16 @@
             if (partes.length === 1) return partes[0];
             if (partes.length === 2) return `${partes[0]} y ${partes[1]}`;
             return `${partes[0]}, ${partes[1]} y ${partes[2]}`;
+        }
+
+        function buscarControles(edadObj) {
+            if (!edadObj || edadObj.totalMonths > 119) return [];
+            
+            return tablaControles.filter(c => {
+                const isAfterMin = edadObj.totalMonths > c.minM || (edadObj.totalMonths === c.minM && edadObj.days >= c.minD);
+                const isBeforeMax = edadObj.totalMonths < c.maxM || (edadObj.totalMonths === c.maxM && edadObj.days <= c.maxD);
+                return isAfterMin && isBeforeMax;
+            });
         }
 
         function calcularEdad() {
@@ -157,11 +199,9 @@
                 return;
             }
 
-            // 1. Edad Cronológica
             const edadCrono = calcularDiferencia(DOB, EvalDate);
             document.getElementById('edadCronologica').textContent = formatEdad(edadCrono);
 
-            // 2. Clasificación y Límite de Corrección
             let clasificacion = "";
             let limiteMeses = 0;
             let criterioTexto = "";
@@ -181,19 +221,17 @@
                 clasificacion = "Prematuro Moderado";
                 criterioTexto = "Hasta los 12 meses de edad corregida.";
                 limiteMeses = 12;
-                colorClase = "alert-yellow"; // Color ajustado para moderado
-                // Asegurar que 33+6 entra aquí (ya que semanas es int 32 o 33)
+                colorClase = "alert-yellow";
             } else if (semanas >= 34 && semanas <= 36) {
                 clasificacion = "Prematuro Tardío";
                 criterioTexto = "Hasta los 6 meses de edad corregida.";
                 limiteMeses = 6;
-                colorClase = "alert-green"; // Color ajustado de la tabla original
+                colorClase = "alert-green";
             }
 
             document.getElementById('clasificacionTexto').textContent = clasificacion;
             document.getElementById('criterioTexto').textContent = criterioTexto;
 
-            // 3. Edad Corregida
             const diasFaltantes = (40 * 7) - ((semanas * 7) + dias);
             const FPP = new Date(DOB.getTime() + (diasFaltantes * 24 * 60 * 60 * 1000));
             
@@ -201,35 +239,60 @@
             const estadoCorreccionEl = document.getElementById('estadoCorreccion');
             const panelClasificacion = document.getElementById('panelClasificacion');
             
-            // Reset panel classes
-            panelClasificacion.className = `rounded-lg p-4 text-sm leading-relaxed border ${colorClase}`;
+            panelClasificacion.className = `rounded-lg p-5 text-base leading-relaxed border shadow-sm ${colorClase}`;
+
+            let edadEfectivaParaControl = edadCrono; 
 
             if (semanas >= 37) {
                 edadCorregidaEl.textContent = "No aplica (Término)";
                 estadoCorreccionEl.textContent = "";
             } else {
                 if (EvalDate < FPP) {
-                    // Aún no llega a las 40 semanas
                     const diasPostConcepcional = (semanas * 7) + dias + Math.floor((EvalDate - DOB) / (1000 * 60 * 60 * 24));
                     const semPost = Math.floor(diasPostConcepcional / 7);
                     const diasPost = diasPostConcepcional % 7;
-                    edadCorregidaEl.textContent = `${semPost} semanas y ${diasPost} días (Edad Post-concepcional)`;
+                    edadCorregidaEl.textContent = `${semPost} sem y ${diasPost} días (Post-concepcional)`;
                     estadoCorreccionEl.textContent = "Paciente en periodo post-concepcional (< 40 semanas).";
                     estadoCorreccionEl.className = "mt-2 font-semibold text-blue-700";
+                    edadEfectivaParaControl = { years: 0, months: 0, totalMonths: 0, days: 0 }; // Fuerza Díada
                 } else {
                     const edadCorregidaObj = calcularDiferencia(FPP, EvalDate);
                     
-                    // Verificar si superó el límite de corrección
                     if (edadCorregidaObj.totalMonths >= limiteMeses) {
                         edadCorregidaEl.textContent = formatEdad(edadCorregidaObj);
                         estadoCorreccionEl.innerHTML = `⚠️ <strong>Límite Superado:</strong> El paciente alcanzó los ${limiteMeses} meses. Ya no se debe corregir la edad. Evaluar con Edad Cronológica.`;
                         estadoCorreccionEl.className = "mt-2 font-semibold text-red-700";
+                        edadEfectivaParaControl = edadCrono;
                     } else {
                         edadCorregidaEl.textContent = formatEdad(edadCorregidaObj);
                         estadoCorreccionEl.textContent = "✓ Edad dentro del periodo de corrección establecido.";
                         estadoCorreccionEl.className = "mt-2 font-semibold text-green-700";
+                        edadEfectivaParaControl = edadCorregidaObj;
                     }
                 }
+            }
+
+            // Renderizado de Agendamiento
+            const controlesEncontrados = buscarControles(edadEfectivaParaControl);
+            const panelAgendamiento = document.getElementById('panelAgendamiento');
+            panelAgendamiento.innerHTML = '';
+
+            if (controlesEncontrados.length === 0) {
+                panelAgendamiento.innerHTML = `<p class="text-indigo-900 font-medium text-lg">No se encontraron controles programados para la edad actual en la tabla normativa o el paciente es mayor de 9 años.</p>`;
+            } else {
+                controlesEncontrados.forEach(c => {
+                    const div = document.createElement('div');
+                    div.className = "bg-white p-4 md:p-5 rounded-xl border border-indigo-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 shadow-sm";
+                    div.innerHTML = `
+                        <div class="flex items-center">
+                            <span class="inline-block px-4 py-2 bg-indigo-100 text-indigo-900 text-sm md:text-base font-bold rounded-lg uppercase tracking-wide">Control: ${c.csi}</span>
+                        </div>
+                        <div class="text-left md:text-right mt-2 md:mt-0">
+                            <span class="block text-lg md:text-xl font-extrabold text-gray-900">TDA: ${c.tda}</span>
+                        </div>
+                    `;
+                    panelAgendamiento.appendChild(div);
+                });
             }
 
             document.getElementById('resultados').classList.remove('hidden');
