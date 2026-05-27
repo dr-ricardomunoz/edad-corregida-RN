@@ -51,6 +51,8 @@
             Calcular Edad y Controles
         </button>
 
+        <div id="errorBox" class="hidden mt-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm font-medium text-center shadow-sm"></div>
+
         <!-- Resultados -->
         <div id="resultados" class="hidden mt-8 space-y-8">
             
@@ -69,9 +71,11 @@
             <!-- Panel de Agendamiento TDA DESTACADO -->
             <div class="alert-indigo rounded-xl p-6 shadow-md">
                 <h3 class="text-base uppercase tracking-wider font-bold text-indigo-900 mb-4 border-b border-indigo-200 pb-3">Agendamiento de Control (Rayen)</h3>
+                
                 <div id="panelAgendamiento" class="space-y-4">
                     <!-- Dinámico -->
                 </div>
+                
                 <p class="text-sm mt-4 text-indigo-700 italic">* Calculado automáticamente según la "Edad Efectiva" (Corregida si aplica, Cronológica si es de término o superó límite de corrección).</p>
             </div>
 
@@ -96,6 +100,22 @@
 
         </div>
 
+    </div>
+
+    <!-- Modal LME -->
+    <div id="modalLME" class="fixed inset-0 bg-gray-900 bg-opacity-60 hidden z-50 flex justify-center items-center px-4 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-sm w-full">
+            <div class="flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 mb-4 mx-auto shadow-sm">
+                <span class="text-2xl drop-shadow-sm">💡</span>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2 text-center">Consulta de Alimentación</h3>
+            <p class="text-sm text-gray-600 mb-6 text-center">Para calcular la fecha sugerida de control</p>
+            <p class="text-base font-semibold text-gray-800 mb-6 text-center">¿El lactante se alimenta con Lactancia Materna Exclusiva (LME)?</p>
+            <div class="flex flex-col gap-3">
+                <button id="btnLmeSi" class="w-full bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 hover:border-blue-300 font-bold py-3 rounded-xl transition shadow-sm">Sí, LME</button>
+                <button id="btnLmeNo" class="w-full bg-orange-50 text-orange-700 border border-orange-200 hover:bg-orange-100 hover:border-orange-300 font-bold py-3 rounded-xl transition shadow-sm">No (Fórmula o Mixta)</button>
+            </div>
+        </div>
     </div>
 
     <footer class="app-footer">
@@ -180,14 +200,47 @@
             });
         }
 
-        function calcularEdad() {
+        function mostrarError(msg) {
+            const box = document.getElementById('errorBox');
+            box.textContent = msg;
+            box.classList.remove('hidden');
+        }
+
+        function ocultarError() {
+            document.getElementById('errorBox').classList.add('hidden');
+        }
+
+        function preguntarLME() {
+            return new Promise(resolve => {
+                const modal = document.getElementById('modalLME');
+                const btnSi = document.getElementById('btnLmeSi');
+                const btnNo = document.getElementById('btnLmeNo');
+
+                const onClickSi = () => { cleanup(); resolve(true); };
+                const onClickNo = () => { cleanup(); resolve(false); };
+
+                btnSi.addEventListener('click', onClickSi);
+                btnNo.addEventListener('click', onClickNo);
+
+                modal.classList.remove('hidden');
+
+                function cleanup() {
+                    modal.classList.add('hidden');
+                    btnSi.removeEventListener('click', onClickSi);
+                    btnNo.removeEventListener('click', onClickNo);
+                }
+            });
+        }
+
+        async function calcularEdad() {
+            ocultarError();
             const dobInput = document.getElementById('fechaNacimiento').value;
             const evalInput = document.getElementById('fechaEvaluacion').value;
             const semanas = parseInt(document.getElementById('semanas').value);
             const dias = parseInt(document.getElementById('dias').value) || 0;
 
             if (!dobInput || !evalInput || isNaN(semanas)) {
-                alert("Por favor, complete todos los campos obligatorios.");
+                mostrarError("Por favor, complete todos los campos obligatorios.");
                 return;
             }
 
@@ -195,7 +248,7 @@
             const EvalDate = parseDateLocal(evalInput);
 
             if (EvalDate < DOB) {
-                alert("La fecha de evaluación no puede ser anterior a la fecha de nacimiento.");
+                mostrarError("La fecha de evaluación no puede ser anterior a la fecha de nacimiento.");
                 return;
             }
 
@@ -206,12 +259,14 @@
             let limiteMeses = 0;
             let criterioTexto = "";
             let colorClase = "";
+            let fechaCero = DOB; // Añadido para cálculo de fechas exactas LME
 
             if (semanas >= 37) {
                 clasificacion = "Recién Nacido de Término";
                 criterioTexto = "No requiere corrección de edad.";
                 limiteMeses = 0;
                 colorClase = "alert-green";
+                fechaCero = DOB;
             } else if (semanas < 32) {
                 clasificacion = "Prematuro Extremo";
                 criterioTexto = "Hasta los 24 meses de edad corregida.";
@@ -255,6 +310,7 @@
                     estadoCorreccionEl.textContent = "Paciente en periodo post-concepcional (< 40 semanas).";
                     estadoCorreccionEl.className = "mt-2 font-semibold text-blue-700";
                     edadEfectivaParaControl = { years: 0, months: 0, totalMonths: 0, days: 0 }; // Fuerza Díada
+                    fechaCero = FPP;
                 } else {
                     const edadCorregidaObj = calcularDiferencia(FPP, EvalDate);
                     
@@ -263,11 +319,13 @@
                         estadoCorreccionEl.innerHTML = `⚠️ <strong>Límite Superado:</strong> El paciente alcanzó los ${limiteMeses} meses. Ya no se debe corregir la edad. Evaluar con Edad Cronológica.`;
                         estadoCorreccionEl.className = "mt-2 font-semibold text-red-700";
                         edadEfectivaParaControl = edadCrono;
+                        fechaCero = DOB;
                     } else {
                         edadCorregidaEl.textContent = formatEdad(edadCorregidaObj);
                         estadoCorreccionEl.textContent = "✓ Edad dentro del periodo de corrección establecido.";
                         estadoCorreccionEl.className = "mt-2 font-semibold text-green-700";
                         edadEfectivaParaControl = edadCorregidaObj;
+                        fechaCero = FPP;
                     }
                 }
             }
@@ -293,6 +351,69 @@
                     `;
                     panelAgendamiento.appendChild(div);
                 });
+
+                const aplicaAlertaLME = controlesEncontrados.some(c => c.csi === "5 meses" || c.csi === "6 meses");
+                
+                if (aplicaAlertaLME) {
+                    const esLME = await preguntarLME();
+                    
+                    const esControl5 = controlesEncontrados.some(c => c.csi === "5 meses");
+                    const esControl6 = controlesEncontrados.some(c => c.csi === "6 meses");
+
+                    function addClinicalAge(date, months, days) {
+                        let f = new Date(date.getTime());
+                        f.setMonth(f.getMonth() + months);
+                        f.setDate(f.getDate() + days);
+                        return f;
+                    }
+                    
+                    function fmt(d) {
+                        return d.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' });
+                    }
+
+                    let recomendacionesHtml = '';
+
+                    if (esLME) {
+                        if (esControl5) {
+                            let desde5 = addClinicalAge(fechaCero, 5, 16);
+                            let hasta5 = addClinicalAge(fechaCero, 5, 29); // Tope normativo de control 5 meses
+                            recomendacionesHtml += `<li>Agendar el <strong>control de 5 meses</strong> entre el <strong class="text-blue-900">${fmt(desde5)}</strong> y el <strong class="text-blue-900">${fmt(hasta5)}</strong>.</li>`;
+                        }
+                        if (esControl6) {
+                            let desde6 = addClinicalAge(fechaCero, 5, 21); // Mínimo normativo de control 6 meses
+                            let hasta6 = addClinicalAge(fechaCero, 6, 15);
+                            recomendacionesHtml += `<li>Agendar el <strong>control de 6 meses</strong> entre el <strong class="text-blue-900">${fmt(desde6)}</strong> y el <strong class="text-blue-900">${fmt(hasta6)}</strong>.</li>`;
+                        }
+                    } else {
+                        if (esControl5) {
+                            let limite5 = addClinicalAge(fechaCero, 5, 16);
+                            recomendacionesHtml += `<li>Agendar el <strong>control de 5 meses</strong> <em>antes del</em> <strong class="text-orange-950">${fmt(limite5)}</strong>.</li>`;
+                        }
+                        if (esControl6) {
+                            let limite6 = addClinicalAge(fechaCero, 6, 15);
+                            recomendacionesHtml += `<li>Agendar el <strong>control de 6 meses</strong> <em>después del</em> <strong class="text-orange-950">${fmt(limite6)}</strong>.</li>`;
+                        }
+                    }
+
+                    const divAlerta = document.createElement('div');
+                    
+                    const bgClass = esLME ? "bg-blue-50 border-blue-200" : "bg-orange-50 border-orange-200";
+                    const textClass = esLME ? "text-blue-900" : "text-orange-900";
+                    const bulletClass = esLME ? "text-blue-800" : "text-orange-800";
+                    const textoTitulo = esLME ? "Ajuste sugerido por tipo de alimentación:" : "Ajuste sugerido por tipo de alimentación:";
+
+                    divAlerta.className = `mt-4 border p-4 md:p-5 rounded-xl flex gap-4 items-start shadow-sm ${bgClass}`;
+                    divAlerta.innerHTML = `
+                        <span class="text-3xl pt-1 drop-shadow-sm">💡</span>
+                        <div class="flex-1">
+                            <p class="text-base font-bold mb-2 ${textClass}">${textoTitulo}</p>
+                            <ul class="list-disc pl-5 text-sm md:text-base space-y-2 ${bulletClass}">
+                                ${recomendacionesHtml}
+                            </ul>
+                        </div>
+                    `;
+                    panelAgendamiento.appendChild(divAlerta);
+                }
             }
 
             document.getElementById('resultados').classList.remove('hidden');
