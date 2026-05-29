@@ -5,120 +5,183 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Edad Corregida y Controles</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@600;700;900&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#5E2785',
+                        primaryLight: '#6e309c',
+                        secondary: '#78B833',
+                        dark: '#2A2C31',
+                        contentBg: '#FFFFFF',
+                        bodyBg: '#F4F5F7'
+                    },
+                    fontFamily: {
+                        sans: ['Open Sans', 'sans-serif'],
+                        heading: ['Poppins', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'card': '0 4px 20px -4px rgba(0, 0, 0, 0.05)',
+                        'floating': '0 10px 30px -5px rgba(94, 39, 133, 0.15)',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
-        .alert-blue { background-color: #eff6ff; border-left: 4px solid #3b82f6; color: #1e3a8a; }
-        .alert-yellow { background-color: #fefce8; border-left: 4px solid #eab308; color: #854d0e; }
-        .alert-red { background-color: #fef2f2; border-left: 4px solid #ef4444; color: #991b1b; }
-        .alert-green { background-color: #f0fdf4; border-left: 4px solid #22c55e; color: #166534; }
-        .alert-indigo { background-color: #eef2ff; border-left: 6px solid #6366f1; color: #3730a3; }
-        .app-footer { text-align: center; margin-top: 2rem; font-size: 0.875rem; color: #6b7280; font-weight: 500; padding-bottom: 1rem; }
+        body { background-color: theme('colors.bodyBg'); color: theme('colors.dark'); }
+        .app-footer { text-align: center; margin-top: 2rem; font-size: 0.875rem; color: #6b7280; font-family: 'Open Sans', sans-serif; padding-bottom: 1rem; }
+        
+        /* Ocultar input number arrows */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+        input[type=number] { -moz-appearance: textfield; }
     </style>
 </head>
 <body class="p-4 md:p-8 flex flex-col justify-center items-center min-h-screen">
 
-    <div class="max-w-3xl w-full bg-white rounded-xl shadow-lg p-6 md:p-8">
+    <div class="max-w-4xl w-full flex flex-col shadow-card rounded-2xl overflow-hidden bg-contentBg">
         
-        <h1 class="text-2xl font-bold text-gray-800 border-b pb-4 mb-6">Calculadora de Edad Corregida y Agendamiento</h1>
-
-        <!-- Formulario de Entrada -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Nacimiento</label>
-                <input type="date" id="fechaNacimiento" class="w-full border border-gray-300 rounded-md shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500" required>
+        <!-- Hero / Header Section -->
+        <div class="bg-gradient-to-r from-primary to-primaryLight p-6 md:p-10 relative overflow-hidden">
+            <div class="relative z-10">
+                <h1 class="text-2xl md:text-3xl font-heading font-black text-white uppercase tracking-tight leading-tight">
+                    Agendamiento de Controles<br>
+                    <span class="text-secondary text-lg md:text-xl tracking-widest font-semibold mt-1 block">Calculadora de Edad Corregida</span>
+                </h1>
             </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Fecha de Evaluación</label>
-                <input type="date" id="fechaEvaluacion" class="w-full border border-gray-300 rounded-md shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500" required>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Edad Gestacional (Semanas)</label>
-                <input type="number" id="semanas" min="20" max="42" placeholder="Ej: 32" class="w-full border border-gray-300 rounded-md shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500" required>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Edad Gestacional (Días)</label>
-                <input type="number" id="dias" min="0" max="6" value="0" placeholder="Ej: 0" class="w-full border border-gray-300 rounded-md shadow-sm p-2.5 focus:ring-blue-500 focus:border-blue-500" required>
-            </div>
-            
+            <!-- Decorative SVG in Header -->
+            <svg class="absolute -right-10 -bottom-10 opacity-10 w-64 h-64 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
         </div>
 
-        <button onclick="calcularEdad()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-md transition duration-200 shadow-sm text-lg">
-            Calcular Edad y Controles
-        </button>
+        <div class="p-6 md:p-10">
+            <!-- Formulario de Entrada -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                
+                <div>
+                    <label class="block text-xs font-heading font-bold text-dark mb-2 uppercase tracking-wide">Fecha de Nacimiento</label>
+                    <input type="date" id="fechaNacimiento" class="w-full border-2 border-gray-200 rounded-lg p-3 text-dark font-sans font-medium focus:ring-0 focus:border-secondary transition-colors outline-none" required>
+                </div>
 
-        <div id="errorBox" class="hidden mt-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm font-medium text-center shadow-sm"></div>
+                <div>
+                    <label class="block text-xs font-heading font-bold text-dark mb-2 uppercase tracking-wide">Fecha de Evaluación</label>
+                    <input type="date" id="fechaEvaluacion" class="w-full border-2 border-gray-200 rounded-lg p-3 text-dark font-sans font-medium focus:ring-0 focus:border-secondary transition-colors outline-none" required>
+                </div>
 
-        <!-- Resultados -->
-        <div id="resultados" class="hidden mt-8 space-y-8">
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="bg-gray-50 rounded-lg p-5 border border-gray-200 shadow-sm">
-                    <h3 class="text-sm uppercase tracking-wider font-semibold text-gray-500 mb-1">Edad Cronológica</h3>
-                    <p id="edadCronologica" class="text-2xl font-bold text-gray-800">-</p>
+                <div>
+                    <label class="block text-xs font-heading font-bold text-dark mb-2 uppercase tracking-wide">Edad Gestacional (Semanas)</label>
+                    <input type="number" id="semanas" min="20" max="42" placeholder="Ej: 32" class="w-full border-2 border-gray-200 rounded-lg p-3 text-dark font-sans font-medium focus:ring-0 focus:border-secondary transition-colors outline-none" required>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-heading font-bold text-dark mb-2 uppercase tracking-wide">Edad Gestacional (Días)</label>
+                    <input type="number" id="dias" min="0" max="6" value="0" placeholder="Ej: 0" class="w-full border-2 border-gray-200 rounded-lg p-3 text-dark font-sans font-medium focus:ring-0 focus:border-secondary transition-colors outline-none" required>
                 </div>
                 
-                <div class="bg-blue-50 rounded-lg p-5 border border-blue-200 shadow-sm">
-                    <h3 class="text-sm uppercase tracking-wider font-semibold text-blue-600 mb-1">Edad Corregida</h3>
-                    <p id="edadCorregida" class="text-2xl font-bold text-blue-900">-</p>
-                </div>
             </div>
 
-            <!-- Panel de Agendamiento TDA DESTACADO -->
-            <div class="alert-indigo rounded-xl p-6 shadow-md">
-                <h3 class="text-base uppercase tracking-wider font-bold text-indigo-900 mb-4 border-b border-indigo-200 pb-3">Agendamiento de Control (Rayen)</h3>
+            <button onclick="calcularEdad()" class="w-full bg-primary hover:bg-secondary text-white font-heading font-bold uppercase tracking-wider py-4 px-6 rounded-xl transition-all duration-300 shadow-floating text-base md:text-lg">
+                Calcular Edad y Control
+            </button>
+
+            <div id="errorBox" class="hidden mt-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-r-lg text-sm font-sans font-semibold shadow-sm"></div>
+
+            <!-- Resultados -->
+            <div id="resultados" class="hidden mt-10 space-y-8">
                 
-                <div id="panelAgendamiento" class="space-y-4">
-                    <!-- Dinámico -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-bodyBg rounded-xl p-6 border border-gray-200 shadow-sm relative overflow-hidden">
+                        <div class="absolute left-0 top-0 w-1 h-full bg-gray-400"></div>
+                        <h3 class="font-heading text-xs uppercase tracking-widest font-bold text-gray-500 mb-2">Edad Cronológica</h3>
+                        <p id="edadCronologica" class="text-2xl font-heading font-bold text-dark">-</p>
+                    </div>
+                    
+                    <div class="bg-bodyBg rounded-xl p-6 border border-gray-200 shadow-sm relative overflow-hidden">
+                        <div class="absolute left-0 top-0 w-1 h-full bg-primary"></div>
+                        <h3 class="font-heading text-xs uppercase tracking-widest font-bold text-primary mb-2">Edad Corregida</h3>
+                        <p id="edadCorregida" class="text-2xl font-heading font-bold text-dark">-</p>
+                    </div>
                 </div>
-                
-                <p class="text-sm mt-4 text-indigo-700 italic">* Calculado automáticamente según la "Edad Efectiva" (Corregida si aplica, Cronológica si es de término o superó límite de corrección).</p>
-            </div>
 
-            <!-- Clasificación y Límite -->
-            <div id="panelClasificacion" class="rounded-lg p-5 text-base leading-relaxed border shadow-sm">
-                <p><strong>Clasificación:</strong> <span id="clasificacionTexto">-</span></p>
-                <p><strong>Criterio de Corrección:</strong> <span id="criterioTexto">-</span></p>
-                <p id="estadoCorreccion" class="mt-2 font-semibold"></p>
-            </div>
+                <!-- Panel de Agendamiento TDA DESTACADO -->
+                <div class="rounded-xl border-2 border-primary shadow-card relative overflow-hidden bg-white">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-secondary"></div>
+                    
+                    <div class="p-6 md:p-8">
+                        <h3 class="text-lg font-heading font-black uppercase tracking-wide text-primary mb-6 border-b-2 border-gray-100 pb-3 flex items-center gap-2">
+                            <svg class="w-6 h-6 text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            Agendamiento de Control (Rayen)
+                        </h3>
+                        
+                        <div id="panelAgendamiento" class="space-y-4">
+                            <!-- Dinámico -->
+                        </div>
+                        
+                        <p class="text-xs mt-6 text-gray-500 font-sans font-medium uppercase tracking-wide">* Calculado automáticamente según la "Edad Efectiva" (Corregida si aplica, Cronológica si es de término o superó límite de corrección).</p>
+                    </div>
+                </div>
 
-            <!-- Recordatorios Normativos -->
-            <div class="alert-yellow p-5 rounded-lg text-sm shadow-sm">
-                <h4 class="font-bold text-base mb-2 flex items-center">
-                    <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                    Recordatorio Clínico
-                </h4>
-                <ul class="list-disc pl-6 space-y-2 text-gray-800">
-                    <li><strong>Controles de Salud y Desarrollo (DSM):</strong> Utilizar Edad Corregida (hasta el límite según prematuridad).</li>
-                    <li><strong>Programa Nacional de Inmunizaciones (Vacunas):</strong> Utilizar siempre Edad Cronológica.</li>
-                </ul>
-            </div>
+                <!-- Clasificación y Límite -->
+                <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm font-sans text-sm">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="font-heading font-bold text-dark uppercase text-xs tracking-wider mb-1">Clasificación</p>
+                            <p id="clasificacionTexto" class="text-base text-dark font-medium">-</p>
+                        </div>
+                        <div>
+                            <p class="font-heading font-bold text-dark uppercase text-xs tracking-wider mb-1">Criterio de Corrección</p>
+                            <p id="criterioTexto" class="text-base text-dark font-medium">-</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-100">
+                        <p id="estadoCorreccion" class="font-semibold"></p>
+                    </div>
+                </div>
 
+                <!-- Recordatorios Normativos -->
+                <div class="bg-bodyBg border-l-4 border-primary p-6 rounded-r-xl shadow-sm">
+                    <h4 class="font-heading font-bold text-sm uppercase tracking-wider text-primary mb-3 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Recordatorio Clínico
+                    </h4>
+                    <ul class="list-none space-y-3 font-sans text-sm text-dark font-medium">
+                        <li class="flex items-start">
+                            <span class="text-secondary mr-2">•</span>
+                            <span><strong>Controles de Salud y Desarrollo (DSM):</strong> Utilizar Edad Corregida (hasta el límite según prematuridad).</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-secondary mr-2">•</span>
+                            <span><strong>Programa Nacional de Inmunizaciones (Vacunas):</strong> Utilizar siempre Edad Cronológica.</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
         </div>
-
     </div>
 
     <!-- Modal LME -->
-    <div id="modalLME" class="fixed inset-0 bg-gray-900 bg-opacity-60 hidden z-50 flex justify-center items-center px-4 backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-sm w-full">
-            <div class="flex items-center justify-center w-12 h-12 rounded-full bg-orange-100 mb-4 mx-auto shadow-sm">
-                <span class="text-2xl drop-shadow-sm">💡</span>
+    <div id="modalLME" class="fixed inset-0 bg-dark bg-opacity-80 hidden z-50 flex justify-center items-center px-4 backdrop-blur-sm transition-opacity">
+        <div class="bg-white rounded-2xl shadow-floating p-6 md:p-8 max-w-sm w-full border-t-4 border-primary">
+            <div class="flex items-center justify-center w-14 h-14 rounded-full bg-bodyBg mb-5 mx-auto">
+                <svg class="w-8 h-8 text-secondary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.516 0c.85.493 1.509 1.333 1.509 2.316V18"></path></svg>
             </div>
-            <h3 class="text-xl font-bold text-gray-900 mb-2 text-center">Consulta de Alimentación</h3>
-            <p class="text-sm text-gray-600 mb-6 text-center">Para calcular la fecha sugerida de control</p>
-            <p class="text-base font-semibold text-gray-800 mb-6 text-center">¿El lactante se alimenta con Lactancia Materna Exclusiva (LME)?</p>
+            <h3 class="text-lg font-heading font-black text-primary mb-2 text-center uppercase tracking-wide">Consulta de Alimentación</h3>
+            <p class="text-sm font-sans font-medium text-gray-500 mb-6 text-center">Para calcular la fecha sugerida de control</p>
+            <p class="text-base font-sans font-bold text-dark mb-6 text-center">¿El lactante se alimenta con Lactancia Materna Exclusiva (LME)?</p>
+            
             <div class="flex flex-col gap-3">
-                <button id="btnLmeSi" class="w-full bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 hover:border-blue-300 font-bold py-3 rounded-xl transition shadow-sm">Sí, LME</button>
-                <button id="btnLmeNo" class="w-full bg-orange-50 text-orange-700 border border-orange-200 hover:bg-orange-100 hover:border-orange-300 font-bold py-3 rounded-xl transition shadow-sm">No (Fórmula o Mixta)</button>
+                <button id="btnLmeSi" class="w-full bg-primary hover:bg-secondary text-white font-heading font-bold uppercase tracking-wider py-3 rounded-xl transition-colors shadow-sm">Sí, LME</button>
+                <button id="btnLmeNo" class="w-full bg-white text-dark border-2 border-gray-200 hover:border-dark font-heading font-bold uppercase tracking-wider py-3 rounded-xl transition-colors shadow-sm">No (Fórmula o Mixta)</button>
             </div>
         </div>
     </div>
 
-    <footer class="app-footer">
+    <footer class="app-footer mt-8">
         Hecho por Ricardo Muñoz R.
     </footer>
 
@@ -240,7 +303,7 @@
             const dias = parseInt(document.getElementById('dias').value) || 0;
 
             if (!dobInput || !evalInput || isNaN(semanas)) {
-                mostrarError("Por favor, complete todos los campos obligatorios.");
+                mostrarError("DATOS INCOMPLETOS: Por favor, complete todos los campos obligatorios.");
                 return;
             }
 
@@ -248,7 +311,7 @@
             const EvalDate = parseDateLocal(evalInput);
 
             if (EvalDate < DOB) {
-                mostrarError("La fecha de evaluación no puede ser anterior a la fecha de nacimiento.");
+                mostrarError("ERROR DE FECHA: La fecha de evaluación no puede ser anterior a la fecha de nacimiento.");
                 return;
             }
 
@@ -258,30 +321,25 @@
             let clasificacion = "";
             let limiteMeses = 0;
             let criterioTexto = "";
-            let colorClase = "";
-            let fechaCero = DOB; // Añadido para cálculo de fechas exactas LME
+            let fechaCero = DOB; 
 
             if (semanas >= 37) {
                 clasificacion = "Recién Nacido de Término";
                 criterioTexto = "No requiere corrección de edad.";
                 limiteMeses = 0;
-                colorClase = "alert-green";
                 fechaCero = DOB;
             } else if (semanas < 32) {
                 clasificacion = "Prematuro Extremo";
                 criterioTexto = "Hasta los 24 meses de edad corregida.";
                 limiteMeses = 24;
-                colorClase = "alert-red";
             } else if (semanas >= 32 && semanas <= 33) {
                 clasificacion = "Prematuro Moderado";
                 criterioTexto = "Hasta los 12 meses de edad corregida.";
                 limiteMeses = 12;
-                colorClase = "alert-yellow";
             } else if (semanas >= 34 && semanas <= 36) {
                 clasificacion = "Prematuro Tardío";
                 criterioTexto = "Hasta los 6 meses de edad corregida.";
                 limiteMeses = 6;
-                colorClase = "alert-green";
             }
 
             document.getElementById('clasificacionTexto').textContent = clasificacion;
@@ -292,10 +350,7 @@
             
             const edadCorregidaEl = document.getElementById('edadCorregida');
             const estadoCorreccionEl = document.getElementById('estadoCorreccion');
-            const panelClasificacion = document.getElementById('panelClasificacion');
             
-            panelClasificacion.className = `rounded-lg p-5 text-base leading-relaxed border shadow-sm ${colorClase}`;
-
             let edadEfectivaParaControl = edadCrono; 
 
             if (semanas >= 37) {
@@ -306,24 +361,24 @@
                     const diasPostConcepcional = (semanas * 7) + dias + Math.floor((EvalDate - DOB) / (1000 * 60 * 60 * 24));
                     const semPost = Math.floor(diasPostConcepcional / 7);
                     const diasPost = diasPostConcepcional % 7;
-                    edadCorregidaEl.textContent = `${semPost} sem y ${diasPost} días (Post-concepcional)`;
+                    edadCorregidaEl.textContent = `${semPost} sem y ${diasPost} días (Post-concep.)`;
                     estadoCorreccionEl.textContent = "Paciente en periodo post-concepcional (< 40 semanas).";
-                    estadoCorreccionEl.className = "mt-2 font-semibold text-blue-700";
-                    edadEfectivaParaControl = { years: 0, months: 0, totalMonths: 0, days: 0 }; // Fuerza Díada
+                    estadoCorreccionEl.className = "text-primary font-bold uppercase text-xs tracking-wider";
+                    edadEfectivaParaControl = { years: 0, months: 0, totalMonths: 0, days: 0 }; 
                     fechaCero = FPP;
                 } else {
                     const edadCorregidaObj = calcularDiferencia(FPP, EvalDate);
                     
                     if (edadCorregidaObj.totalMonths >= limiteMeses) {
                         edadCorregidaEl.textContent = formatEdad(edadCorregidaObj);
-                        estadoCorreccionEl.innerHTML = `⚠️ <strong>Límite Superado:</strong> El paciente alcanzó los ${limiteMeses} meses. Ya no se debe corregir la edad. Evaluar con Edad Cronológica.`;
-                        estadoCorreccionEl.className = "mt-2 font-semibold text-red-700";
+                        estadoCorreccionEl.innerHTML = `<span class="text-red-600">⚠️ LÍMITE SUPERADO:</span> El paciente alcanzó los ${limiteMeses} meses. Ya no se debe corregir la edad. Evaluar con Edad Cronológica.`;
+                        estadoCorreccionEl.className = "text-dark font-bold text-xs uppercase tracking-wider";
                         edadEfectivaParaControl = edadCrono;
                         fechaCero = DOB;
                     } else {
                         edadCorregidaEl.textContent = formatEdad(edadCorregidaObj);
                         estadoCorreccionEl.textContent = "✓ Edad dentro del periodo de corrección establecido.";
-                        estadoCorreccionEl.className = "mt-2 font-semibold text-green-700";
+                        estadoCorreccionEl.className = "text-secondary font-bold text-xs uppercase tracking-wider";
                         edadEfectivaParaControl = edadCorregidaObj;
                         fechaCero = FPP;
                     }
@@ -336,17 +391,17 @@
             panelAgendamiento.innerHTML = '';
 
             if (controlesEncontrados.length === 0) {
-                panelAgendamiento.innerHTML = `<p class="text-indigo-900 font-medium text-lg">No se encontraron controles programados para la edad actual en la tabla normativa o el paciente es mayor de 9 años.</p>`;
+                panelAgendamiento.innerHTML = `<p class="text-dark font-sans font-medium text-base">No se encontraron controles programados para la edad actual en la tabla normativa o el paciente es mayor de 9 años.</p>`;
             } else {
                 controlesEncontrados.forEach(c => {
                     const div = document.createElement('div');
-                    div.className = "bg-white p-4 md:p-5 rounded-xl border border-indigo-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 shadow-sm";
+                    div.className = "bg-bodyBg p-4 md:p-5 rounded-xl border border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-3";
                     div.innerHTML = `
                         <div class="flex items-center">
-                            <span class="inline-block px-4 py-2 bg-indigo-100 text-indigo-900 text-sm md:text-base font-bold rounded-lg uppercase tracking-wide">Control: ${c.csi}</span>
+                            <span class="inline-block px-4 py-2 bg-primary text-white text-sm md:text-base font-heading font-bold rounded-lg uppercase tracking-wide">Control: ${c.csi}</span>
                         </div>
                         <div class="text-left md:text-right mt-2 md:mt-0">
-                            <span class="block text-lg md:text-xl font-extrabold text-gray-900">TDA: ${c.tda}</span>
+                            <span class="block text-lg md:text-xl font-heading font-black text-dark uppercase">TDA: <span class="text-primary">${c.tda}</span></span>
                         </div>
                     `;
                     panelAgendamiento.appendChild(div);
@@ -376,38 +431,36 @@
                     if (esLME) {
                         if (esControl5) {
                             let desde5 = addClinicalAge(fechaCero, 5, 16);
-                            let hasta5 = addClinicalAge(fechaCero, 5, 29); // Tope normativo de control 5 meses
-                            recomendacionesHtml += `<li>Agendar el <strong>control de 5 meses</strong> entre el <strong class="text-blue-900">${fmt(desde5)}</strong> y el <strong class="text-blue-900">${fmt(hasta5)}</strong>.</li>`;
+                            let hasta5 = addClinicalAge(fechaCero, 5, 29); 
+                            recomendacionesHtml += `<li>Agendar el <strong class="text-dark">control de 5 meses</strong> entre el <strong>${fmt(desde5)}</strong> y el <strong>${fmt(hasta5)}</strong>.</li>`;
                         }
                         if (esControl6) {
-                            let desde6 = addClinicalAge(fechaCero, 5, 21); // Mínimo normativo de control 6 meses
+                            let desde6 = addClinicalAge(fechaCero, 5, 21); 
                             let hasta6 = addClinicalAge(fechaCero, 6, 15);
-                            recomendacionesHtml += `<li>Agendar el <strong>control de 6 meses</strong> entre el <strong class="text-blue-900">${fmt(desde6)}</strong> y el <strong class="text-blue-900">${fmt(hasta6)}</strong>.</li>`;
+                            recomendacionesHtml += `<li>Agendar el <strong class="text-dark">control de 6 meses</strong> entre el <strong>${fmt(desde6)}</strong> y el <strong>${fmt(hasta6)}</strong>.</li>`;
                         }
                     } else {
                         if (esControl5) {
                             let limite5 = addClinicalAge(fechaCero, 5, 16);
-                            recomendacionesHtml += `<li>Agendar el <strong>control de 5 meses</strong> <em>antes del</em> <strong class="text-orange-950">${fmt(limite5)}</strong>.</li>`;
+                            recomendacionesHtml += `<li>Agendar el <strong class="text-dark">control de 5 meses</strong> <em>antes del</em> <strong>${fmt(limite5)}</strong>.</li>`;
                         }
                         if (esControl6) {
                             let limite6 = addClinicalAge(fechaCero, 6, 15);
-                            recomendacionesHtml += `<li>Agendar el <strong>control de 6 meses</strong> <em>después del</em> <strong class="text-orange-950">${fmt(limite6)}</strong>.</li>`;
+                            recomendacionesHtml += `<li>Agendar el <strong class="text-dark">control de 6 meses</strong> <em>después del</em> <strong>${fmt(limite6)}</strong>.</li>`;
                         }
                     }
 
                     const divAlerta = document.createElement('div');
-                    
-                    const bgClass = esLME ? "bg-blue-50 border-blue-200" : "bg-orange-50 border-orange-200";
-                    const textClass = esLME ? "text-blue-900" : "text-orange-900";
-                    const bulletClass = esLME ? "text-blue-800" : "text-orange-800";
-                    const textoTitulo = esLME ? "Ajuste sugerido por tipo de alimentación:" : "Ajuste sugerido por tipo de alimentación:";
+                    const textoTitulo = "Ajuste Sugerido por Alimentación (LME)";
 
-                    divAlerta.className = `mt-4 border p-4 md:p-5 rounded-xl flex gap-4 items-start shadow-sm ${bgClass}`;
+                    divAlerta.className = `mt-4 border-l-4 border-secondary bg-bodyBg p-4 md:p-5 rounded-r-xl flex gap-4 items-start shadow-sm`;
                     divAlerta.innerHTML = `
-                        <span class="text-3xl pt-1 drop-shadow-sm">💡</span>
+                        <div class="shrink-0 mt-0.5">
+                            <svg class="w-7 h-7 text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.516 0c.85.493 1.509 1.333 1.509 2.316V18"></path></svg>
+                        </div>
                         <div class="flex-1">
-                            <p class="text-base font-bold mb-2 ${textClass}">${textoTitulo}</p>
-                            <ul class="list-disc pl-5 text-sm md:text-base space-y-2 ${bulletClass}">
+                            <p class="text-sm font-heading font-bold mb-2 text-primary uppercase tracking-wider">${textoTitulo}</p>
+                            <ul class="list-disc pl-5 text-sm md:text-base space-y-2 text-dark font-sans font-medium">
                                 ${recomendacionesHtml}
                             </ul>
                         </div>
