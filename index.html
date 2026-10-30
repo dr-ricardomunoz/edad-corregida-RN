@@ -1,476 +1,426 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Edad Corregida y Controles</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@600;700;900&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#5E2785',
-                        primaryLight: '#6e309c',
-                        secondary: '#78B833',
-                        dark: '#2A2C31',
-                        contentBg: '#FFFFFF',
-                        bodyBg: '#F4F5F7'
-                    },
-                    fontFamily: {
-                        sans: ['Open Sans', 'sans-serif'],
-                        heading: ['Poppins', 'sans-serif'],
-                    },
-                    boxShadow: {
-                        'card': '0 4px 20px -4px rgba(0, 0, 0, 0.05)',
-                        'floating': '0 10px 30px -5px rgba(94, 39, 133, 0.15)',
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        body { background-color: theme('colors.bodyBg'); color: theme('colors.dark'); }
-        .app-footer { text-align: center; margin-top: 2rem; font-size: 0.875rem; color: #6b7280; font-family: 'Open Sans', sans-serif; padding-bottom: 1rem; }
-        
-        /* Ocultar input number arrows */
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        input[type=number] { -moz-appearance: textfield; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Calculadora para agendamiento de controles infantiles y edad corregida por prematuridad, con TDA institucionales.">
+<title>Agendamiento de Controles Infantiles | Edad Corregida</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {--primary:#5E2785;--primary-light:#72349e;--secondary:#78B833;--secondary-hover:#67a129;--text-main:#2A2C31;--text-muted:#6b7280;--bg-body:#f4f5f8;--bg-card:#fff;--border:#e5e7eb;--warning:#92400e;--warning-bg:#fffbeb}
+* {box-sizing:border-box}
+body {margin:0;background:var(--bg-body);color:var(--text-main);font:400 15px/1.55 Inter,Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column}
+h1,h2,h3,h4 {font-family:Poppins,sans-serif;text-transform:uppercase;color:var(--primary);line-height:1.35}
+.hero-banner {background:linear-gradient(135deg,var(--primary),var(--primary-light));color:white;text-align:center;padding:2rem 1.5rem;box-shadow:0 4px 12px rgba(94,39,133,.15);margin-bottom:2rem}
+.hero-banner h1 {color:white;font-size:1.5rem;font-weight:900;letter-spacing:.5px;margin:0 0 .5rem}
+.hero-banner p {font-size:.95rem;font-weight:500;opacity:.95;margin:0}
+.dashboard {display:flex;flex-direction:column;gap:2rem;width:100%;max-width:1280px;padding:0 1.5rem;margin:0 auto;flex:1}
+@media (min-width:1024px) {.dashboard{flex-direction:row;align-items:flex-start}.panel-calculadora{flex:0 0 450px}.panel-resultados{flex:1;min-width:0}}
+.card {background:white;padding:1.5rem;border-radius:12px;box-shadow:0 4px 15px rgba(0,0,0,.03);border:1px solid rgba(0,0,0,.05);margin-bottom:1.5rem}
+.card-title {font-size:1.15rem;font-weight:700;letter-spacing:.5px;border-bottom:2px solid var(--border);padding-bottom:.75rem;margin:0 0 .5rem}
+.card-subtitle {color:var(--text-muted);font-size:.875rem;margin:0 0 1.5rem;font-weight:500}
+.form-grid {display:grid;grid-template-columns:1fr;gap:1.2rem}
+.form-group {display:flex;flex-direction:column;gap:.35rem;align-items:flex-start}
+.main-label {font-size:.875rem;font-weight:600}
+.input-group {display:flex;width:100%;background:white;border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.input-group:focus-within {border-color:var(--secondary);box-shadow:0 0 0 3px rgba(120,184,51,.15)}
+.input-group input {flex:1;min-width:0;border:0;background:white;padding:.7rem .75rem;font:inherit;color:var(--text-main);outline:none}
+.input-group .addon {display:flex;align-items:center;min-width:5rem;padding:.55rem .75rem;background:#f9fafb;border-left:1px solid var(--border);font-size:.8rem;color:var(--text-muted);font-weight:600}
+.hint {font-size:.76rem;color:var(--text-muted);margin:.1rem 0 0}
+.gestation-grid {display:grid;grid-template-columns:1fr 1fr;gap:.75rem;width:100%}
+button {font:600 .875rem Inter,sans-serif;border:none;border-radius:8px;padding:.85rem 1rem;cursor:pointer;transition:background .2s}
+.buttons {display:flex;flex-wrap:wrap;gap:.75rem;margin-top:1.75rem}
+.btn-calc {background:var(--secondary);color:white;flex:1;min-width:180px}
+.btn-calc:hover {background:var(--secondary-hover)}
+.btn-reset {background:white;border:1px solid var(--border);color:var(--text-main)}
+.btn-reset:hover {background:var(--bg-body)}
+.error {display:none;margin-top:1rem;background:#fef2f2;border-left:4px solid #ef4444;color:#7f1d1d;padding:.85rem;border-radius:6px;font-weight:600;font-size:.875rem}
+#resultados {display:none}
+.initial-state {text-align:center;color:var(--text-muted);padding:2rem .6rem}
+.initial-state svg {width:3rem;height:3rem;color:var(--primary);margin-bottom:1rem}
+.age-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.75rem;margin-bottom:1rem}
+.age-tile {padding:1rem;border:1px solid var(--border);border-radius:10px;background:var(--bg-body);border-top:4px solid var(--primary)}
+.age-tile.muted {border-top-color:#9ca3af}
+.age-label {font-size:.72rem;letter-spacing:.04em;font-weight:700;text-transform:uppercase;color:var(--text-muted);margin:0 0 .25rem}
+.age-value {font:700 1.05rem/1.45 Poppins,sans-serif;margin:0}
+.info-line {font-size:.88rem;color:var(--text-muted);margin:.5rem 0}
+.section-label {font:700 1rem Poppins,sans-serif;color:var(--primary);text-transform:uppercase;margin:1.5rem 0 .75rem}
+.control {border:1px solid var(--border);border-left:5px solid var(--secondary);border-radius:9px;padding:1rem;margin:.65rem 0;background:white}
+.control.previous {border-left-color:#9ca3af;background:#f9fafb}
+.control.future {border-left-color:var(--primary)}
+.control-head {display:flex;justify-content:space-between;align-items:center;gap:.7rem;flex-wrap:wrap}
+.control h4 {margin:0;color:var(--text-main);font-size:.99rem}
+.tag {font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.025em;padding:.2rem .45rem;border-radius:5px;background:#f3e8ff;color:var(--primary)}
+.tag.green {background:#ecfccb;color:#3f6212}
+.tag.gray {background:#f3f4f6;color:#4b5563}
+.control p {margin:.35rem 0;font-size:.875rem}
+.control strong {font-weight:700}
+.date-detail {font-weight:700;color:var(--primary)}
+.alert {border-left:4px solid #f59e0b;border-radius:6px;background:var(--warning-bg);padding:1rem;color:var(--warning);font-size:.875rem;margin:1rem 0}
+.alert strong {display:block;margin-bottom:.3rem}
+.notice {border-left:4px solid var(--primary);padding:.85rem 1rem;background:#faf5ff;border-radius:6px;margin-top:1rem;font-size:.86rem}
+.hidden {display:none!important}
+.modal-backdrop {position:fixed;inset:0;z-index:100;display:flex;justify-content:center;align-items:center;padding:1rem;background:rgba(42,44,49,.75)}
+.modal {background:white;border-radius:14px;border-top:5px solid var(--primary);max-width:430px;width:100%;padding:1.5rem;box-shadow:0 15px 40px rgba(0,0,0,.18);max-height:90vh;overflow-y:auto}
+.modal h2 {margin:0 0 .5rem;font-size:1.08rem;text-align:center}
+.modal p {font-size:.88rem;color:var(--text-muted);text-align:center}
+.choice {display:flex;align-items:center;gap:.5rem;border:1px solid var(--border);border-radius:8px;padding:.65rem;margin:.45rem 0;cursor:pointer;font-size:.9rem}
+.choice input {accent-color:var(--primary)}
+.question {font-size:.85rem;font-weight:700;margin:.9rem 0 .45rem}
+.modal select {width:100%;padding:.65rem;border:1px solid var(--border);border-radius:8px;background:white;font:inherit}
+.modal .btn-calc {width:100%;margin-top:1rem}
+.app-footer {font-size:.875rem;text-align:center;padding:2rem 1.5rem;margin-top:auto;color:var(--text-muted)}
+.app-footer a {color:var(--primary);text-decoration:underline}
+@media(max-width:480px) {.dashboard{padding:0 1rem}.card{padding:1rem}.age-grid{grid-template-columns:1fr}.hero-banner{padding:1.4rem 1rem}.hero-banner h1{font-size:1.24rem}}
+</style>
 </head>
-<body class="p-4 md:p-8 flex flex-col justify-center items-center min-h-screen">
-
-    <div class="max-w-4xl w-full flex flex-col shadow-card rounded-2xl overflow-hidden bg-contentBg">
-        
-        <!-- Hero / Header Section -->
-        <div class="bg-gradient-to-r from-primary to-primaryLight p-6 md:p-10 relative overflow-hidden">
-            <div class="relative z-10">
-                <h1 class="text-2xl md:text-3xl font-heading font-black text-white uppercase tracking-tight leading-tight">
-                    Agendamiento de Controles<br>
-                    <span class="text-secondary text-lg md:text-xl tracking-widest font-semibold mt-1 block">Calculadora de Edad Corregida</span>
-                </h1>
+<body>
+<header class="hero-banner">
+  <h1>Agendamiento de Controles Infantiles</h1>
+  <p>Calculadora de edad cronológica y corregida · Apoyo para SOME</p>
+</header>
+<div class="dashboard">
+  <main class="panel-calculadora">
+    <section class="card">
+      <h2 class="card-title">Datos para agendamiento</h2>
+      <p class="card-subtitle">Ingrese los datos del niño o niña y una fecha con disponibilidad de hora en Rayen.</p>
+      <form id="agenda-form">
+        <div class="form-grid">
+          <div class="form-group">
+            <label class="main-label" for="fechaNacimiento">Fecha de nacimiento</label>
+            <div class="input-group"><input id="fechaNacimiento" name="fechaNacimiento" type="date" required></div>
+          </div>
+          <div class="form-group">
+            <label class="main-label" for="semanas">Edad gestacional al nacer (opcional)</label>
+            <div class="gestation-grid">
+              <div class="input-group"><input id="semanas" name="semanas" type="number" inputmode="numeric" min="20" max="42" placeholder="Ej.: 32" aria-label="Semanas de gestación"><span class="addon">semanas</span></div>
+              <div class="input-group"><input id="dias" name="dias" type="number" inputmode="numeric" min="0" max="6" placeholder="0" aria-label="Días adicionales de gestación"><span class="addon">días</span></div>
             </div>
-            <!-- Decorative SVG in Header -->
-            <svg class="absolute -right-10 -bottom-10 opacity-10 w-64 h-64 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/></svg>
+            <p class="hint">Si no ingresa edad gestacional, se calculará como nacido de término. Si se conoce prematuridad, debe completar la edad gestacional.</p>
+          </div>
+          <div class="form-group">
+            <label class="main-label" for="fechaAgenda">Fecha de agenda disponible</label>
+            <div class="input-group"><input id="fechaAgenda" name="fechaAgenda" type="date" required></div>
+            <p class="hint">Seleccione la fecha en que SOME encontró una hora disponible, no la fecha en que la familia solicita atención.</p>
+          </div>
         </div>
-
-        <div class="p-6 md:p-10">
-            <!-- Formulario de Entrada -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                
-                <div>
-                    <label class="block text-xs font-heading font-bold text-dark mb-2 uppercase tracking-wide">Fecha de Nacimiento</label>
-                    <input type="date" id="fechaNacimiento" class="w-full border-2 border-gray-200 rounded-lg p-3 text-dark font-sans font-medium focus:ring-0 focus:border-secondary transition-colors outline-none" required>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-heading font-bold text-dark mb-2 uppercase tracking-wide">Fecha de Evaluación</label>
-                    <input type="date" id="fechaEvaluacion" class="w-full border-2 border-gray-200 rounded-lg p-3 text-dark font-sans font-medium focus:ring-0 focus:border-secondary transition-colors outline-none" required>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-heading font-bold text-dark mb-2 uppercase tracking-wide">Edad Gestacional (Semanas)</label>
-                    <input type="number" id="semanas" min="20" max="42" placeholder="Ej: 32" class="w-full border-2 border-gray-200 rounded-lg p-3 text-dark font-sans font-medium focus:ring-0 focus:border-secondary transition-colors outline-none" required>
-                </div>
-
-                <div>
-                    <label class="block text-xs font-heading font-bold text-dark mb-2 uppercase tracking-wide">Edad Gestacional (Días)</label>
-                    <input type="number" id="dias" min="0" max="6" value="0" placeholder="Ej: 0" class="w-full border-2 border-gray-200 rounded-lg p-3 text-dark font-sans font-medium focus:ring-0 focus:border-secondary transition-colors outline-none" required>
-                </div>
-                
-            </div>
-
-            <button onclick="calcularEdad()" class="w-full bg-primary hover:bg-secondary text-white font-heading font-bold uppercase tracking-wider py-4 px-6 rounded-xl transition-all duration-300 shadow-floating text-base md:text-lg">
-                Calcular Edad y Control
-            </button>
-
-            <div id="errorBox" class="hidden mt-6 p-4 bg-red-50 border-l-4 border-red-500 text-red-800 rounded-r-lg text-sm font-sans font-semibold shadow-sm"></div>
-
-            <!-- Resultados -->
-            <div id="resultados" class="hidden mt-10 space-y-8">
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="bg-bodyBg rounded-xl p-6 border border-gray-200 shadow-sm relative overflow-hidden">
-                        <div class="absolute left-0 top-0 w-1 h-full bg-gray-400"></div>
-                        <h3 class="font-heading text-xs uppercase tracking-widest font-bold text-gray-500 mb-2">Edad Cronológica</h3>
-                        <p id="edadCronologica" class="text-2xl font-heading font-bold text-dark">-</p>
-                    </div>
-                    
-                    <div class="bg-bodyBg rounded-xl p-6 border border-gray-200 shadow-sm relative overflow-hidden">
-                        <div class="absolute left-0 top-0 w-1 h-full bg-primary"></div>
-                        <h3 class="font-heading text-xs uppercase tracking-widest font-bold text-primary mb-2">Edad Corregida</h3>
-                        <p id="edadCorregida" class="text-2xl font-heading font-bold text-dark">-</p>
-                    </div>
-                </div>
-
-                <!-- Panel de Agendamiento TDA DESTACADO -->
-                <div class="rounded-xl border-2 border-primary shadow-card relative overflow-hidden bg-white">
-                    <div class="absolute top-0 left-0 w-full h-1 bg-secondary"></div>
-                    
-                    <div class="p-6 md:p-8">
-                        <h3 class="text-lg font-heading font-black uppercase tracking-wide text-primary mb-6 border-b-2 border-gray-100 pb-3 flex items-center gap-2">
-                            <svg class="w-6 h-6 text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                            Agendamiento de Control (Rayen)
-                        </h3>
-                        
-                        <div id="panelAgendamiento" class="space-y-4">
-                            <!-- Dinámico -->
-                        </div>
-                        
-                        <p class="text-xs mt-6 text-gray-500 font-sans font-medium uppercase tracking-wide">* Calculado automáticamente según la "Edad Efectiva" (Corregida si aplica, Cronológica si es de término o superó límite de corrección).</p>
-                    </div>
-                </div>
-
-                <!-- Clasificación y Límite -->
-                <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm font-sans text-sm">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <p class="font-heading font-bold text-dark uppercase text-xs tracking-wider mb-1">Clasificación</p>
-                            <p id="clasificacionTexto" class="text-base text-dark font-medium">-</p>
-                        </div>
-                        <div>
-                            <p class="font-heading font-bold text-dark uppercase text-xs tracking-wider mb-1">Criterio de Corrección</p>
-                            <p id="criterioTexto" class="text-base text-dark font-medium">-</p>
-                        </div>
-                    </div>
-                    <div class="mt-4 pt-4 border-t border-gray-100">
-                        <p id="estadoCorreccion" class="font-semibold"></p>
-                    </div>
-                </div>
-
-                <!-- Recordatorios Normativos -->
-                <div class="bg-bodyBg border-l-4 border-primary p-6 rounded-r-xl shadow-sm">
-                    <h4 class="font-heading font-bold text-sm uppercase tracking-wider text-primary mb-3 flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Recordatorio Clínico
-                    </h4>
-                    <ul class="list-none space-y-3 font-sans text-sm text-dark font-medium">
-                        <li class="flex items-start">
-                            <span class="text-secondary mr-2">•</span>
-                            <span><strong>Controles de Salud y Desarrollo (DSM):</strong> Utilizar Edad Corregida (hasta el límite según prematuridad).</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-secondary mr-2">•</span>
-                            <span><strong>Programa Nacional de Inmunizaciones (Vacunas):</strong> Utilizar siempre Edad Cronológica.</span>
-                        </li>
-                    </ul>
-                </div>
-
-            </div>
+        <div class="error" id="errorBox" role="alert"></div>
+        <div class="buttons">
+          <button class="btn-calc" type="submit">Calcular edad y control</button>
+          <button class="btn-reset" type="button" id="btnLimpiar">Limpiar</button>
         </div>
+      </form>
+    </section>
+    <section class="card">
+      <h2 class="card-title">Cómo usar el resultado</h2>
+      <p class="card-subtitle" style="margin-bottom:.6rem">La herramienta no comprueba si el control ya fue realizado ni consulta cupos en Rayen.</p>
+      <p style="font-size:.86rem;margin:0">Si la familia solicita un control anterior, verifique su realización y el motivo de la solicitud antes de agendar el siguiente. Las fechas mostradas corresponden a la tabla institucional de TDA del ciclo vital infantil.</p>
+    </section>
+  </main>
+  <aside class="panel-resultados" aria-live="polite">
+    <section class="card" id="result-card">
+      <h2 class="card-title">Orientación de agendamiento</h2>
+      <div id="initial" class="initial-state">
+        <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 3v4m8-4v4M5 10h14M5 5h14a2 2 0 012 2v12a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2z"/></svg>
+        <p><strong>Seleccione una fecha disponible y calcule</strong></p>
+        <p>Se indicará qué control corresponde, cuál fue el anterior y cuáles son las próximas ventanas de agendamiento.</p>
+      </div>
+      <div id="resultados">
+        <div class="age-grid">
+          <div class="age-tile muted"><p class="age-label">Edad cronológica</p><p class="age-value" id="edadCronologica"></p></div>
+          <div class="age-tile"><p class="age-label">Edad corregida</p><p class="age-value" id="edadCorregida"></p></div>
+        </div>
+        <p class="info-line" id="clasificacionTexto"></p>
+        <p class="info-line" id="criterioTexto"></p>
+        <div id="estadoCorreccion" class="notice"></div>
+        <h3 class="section-label">Control en la fecha disponible</h3>
+        <div id="panelActual"></div>
+        <div id="alertaVentanas"></div>
+        <h3 class="section-label">Control anterior / por verificar</h3>
+        <div id="panelAnterior"></div>
+        <h3 class="section-label">Próximos controles sugeridos</h3>
+        <div id="panelProximos"></div>
+        <div id="panelAlimentacion"></div>
+        <div class="notice">Importante: PNI/vacunación se organiza según edad cronológica. Esta calculadora orienta únicamente el agendamiento de controles de salud infantil.</div>
+      </div>
+    </section>
+  </aside>
+</div>
+<div id="modalAlimentacion" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
+  <div class="modal">
+    <h2 id="modalTitulo">Consulta de alimentación</h2>
+    <p>Para orientar el agendamiento de controles de 5 y 6 meses.</p>
+    <div class="question">¿Qué alimentación recibe actualmente?</div>
+    <label class="choice"><input type="radio" name="alimentacion" value="lme"> Lactancia materna exclusiva</label>
+    <label class="choice"><input type="radio" name="alimentacion" value="mixta"> Lactancia mixta</label>
+    <label class="choice"><input type="radio" name="alimentacion" value="formula"> Fórmula exclusiva</label>
+    <label class="choice"><input type="radio" name="alimentacion" value="noInformada"> No informado</label>
+    <div id="preguntaControlPrevio" class="hidden">
+      <div class="question">Si coinciden controles de 5 y 6 meses, ¿ya tuvo control de 5 meses?</div>
+      <select id="control5Realizado" aria-label="Control de cinco meses realizado">
+        <option value="desconocido">No consta / consultar a la familia</option>
+        <option value="si">Sí, ya fue realizado</option>
+        <option value="no">No, está pendiente</option>
+      </select>
     </div>
-
-    <!-- Modal LME -->
-    <div id="modalLME" class="fixed inset-0 bg-dark bg-opacity-80 hidden z-50 flex justify-center items-center px-4 backdrop-blur-sm transition-opacity">
-        <div class="bg-white rounded-2xl shadow-floating p-6 md:p-8 max-w-sm w-full border-t-4 border-primary">
-            <div class="flex items-center justify-center w-14 h-14 rounded-full bg-bodyBg mb-5 mx-auto">
-                <svg class="w-8 h-8 text-secondary" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.516 0c.85.493 1.509 1.333 1.509 2.316V18"></path></svg>
-            </div>
-            <h3 class="text-lg font-heading font-black text-primary mb-2 text-center uppercase tracking-wide">Consulta de Alimentación</h3>
-            <p class="text-sm font-sans font-medium text-gray-500 mb-6 text-center">Para calcular la fecha sugerida de control</p>
-            <p class="text-base font-sans font-bold text-dark mb-6 text-center">¿El lactante se alimenta con Lactancia Materna Exclusiva (LME)?</p>
-            
-            <div class="flex flex-col gap-3">
-                <button id="btnLmeSi" class="w-full bg-primary hover:bg-secondary text-white font-heading font-bold uppercase tracking-wider py-3 rounded-xl transition-colors shadow-sm">Sí, LME</button>
-                <button id="btnLmeNo" class="w-full bg-white text-dark border-2 border-gray-200 hover:border-dark font-heading font-bold uppercase tracking-wider py-3 rounded-xl transition-colors shadow-sm">No (Fórmula o Mixta)</button>
-            </div>
-        </div>
-    </div>
-
-    <footer class="app-footer mt-8">
-        Hecho por Ricardo Muñoz R.
-    </footer>
-
-    <script>
-        // Tabla de controles (Normalizada a meses totales y días para motor de reglas)
-        const tablaControles = [
-            { csi: "Díada", minM: 0, minD: 0, maxM: 0, maxD: 28, tda: "Control Binomio" },
-            { csi: "1 mes", minM: 0, minD: 28, maxM: 1, maxD: 20, tda: "Control sano 1 y 3 meses" },
-            { csi: "2 meses", minM: 1, minD: 21, maxM: 2, maxD: 20, tda: "Control sano 2 meses" },
-            { csi: "3 meses", minM: 2, minD: 21, maxM: 3, maxD: 20, tda: "Control sano 1 y 3 meses" },
-            { csi: "4 meses", minM: 3, minD: 21, maxM: 4, maxD: 29, tda: "Control Sano" },
-            { csi: "5 meses", minM: 5, minD: 0, maxM: 5, maxD: 29, tda: "Control Sano" },
-            { csi: "6 meses", minM: 5, minD: 21, maxM: 7, maxD: 20, tda: "Control Sano" },
-            { csi: "8 meses", minM: 7, minD: 21, maxM: 11, maxD: 20, tda: "Control sano 8 meses" },
-            { csi: "12 meses", minM: 11, minD: 21, maxM: 17, maxD: 20, tda: "Control Sano" },
-            { csi: "18 meses", minM: 17, minD: 21, maxM: 23, maxD: 20, tda: "Control sano 18 meses" },
-            { csi: "2 años", minM: 23, minD: 21, maxM: 35, maxD: 20, tda: "Control Sano" },
-            { csi: "3 años", minM: 35, minD: 21, maxM: 47, maxD: 20, tda: "Control Sano 3 años" },
-            { csi: "3 años y 6 meses", minM: 42, minD: 0, maxM: 47, maxD: 29, tda: "Control Sano" },
-            { csi: "4 años", minM: 48, minD: 0, maxM: 59, maxD: 29, tda: "Control Sano" },
-            { csi: "5 años", minM: 60, minD: 0, maxM: 71, maxD: 29, tda: "Control Sano" },
-            { csi: "6 años", minM: 72, minD: 0, maxM: 83, maxD: 29, tda: "Control Sano" },
-            { csi: "7 años", minM: 84, minD: 0, maxM: 95, maxD: 29, tda: "Control Sano" },
-            { csi: "8 años", minM: 96, minD: 0, maxM: 107, maxD: 29, tda: "Control Sano" },
-            { csi: "9 años", minM: 108, minD: 0, maxM: 119, maxD: 29, tda: "Control Sano" }
-        ];
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const today = new Date();
-            const year = today.getFullYear();
-            const month = String(today.getMonth() + 1).padStart(2, '0');
-            const day = String(today.getDate()).padStart(2, '0');
-            document.getElementById('fechaEvaluacion').value = `${year}-${month}-${day}`;
-        });
-
-        function parseDateLocal(dateString) {
-            if (!dateString) return null;
-            const [year, month, day] = dateString.split('-');
-            return new Date(year, month - 1, day);
-        }
-
-        function calcularDiferencia(fechaInicio, fechaFin) {
-            if (fechaInicio > fechaFin) return null;
-            let years = fechaFin.getFullYear() - fechaInicio.getFullYear();
-            let months = fechaFin.getMonth() - fechaInicio.getMonth();
-            let days = fechaFin.getDate() - fechaInicio.getDate();
-
-            if (days < 0) {
-                months--;
-                const prevMonth = new Date(fechaFin.getFullYear(), fechaFin.getMonth(), 0);
-                days += prevMonth.getDate();
-            }
-            if (months < 0) {
-                years--;
-                months += 12;
-            }
-            return { years, months, days, totalMonths: (years * 12) + months };
-        }
-
-        function formatEdad(edadObj) {
-            if (!edadObj) return "N/A";
-            const partes = [];
-            if (edadObj.years > 0) partes.push(`${edadObj.years} año${edadObj.years > 1 ? 's' : ''}`);
-            if (edadObj.months > 0) partes.push(`${edadObj.months} mes${edadObj.months > 1 ? 'es' : ''}`);
-            if (edadObj.days > 0 || partes.length === 0) partes.push(`${edadObj.days} día${edadObj.days !== 1 ? 's' : ''}`);
-            
-            if (partes.length === 1) return partes[0];
-            if (partes.length === 2) return `${partes[0]} y ${partes[1]}`;
-            return `${partes[0]}, ${partes[1]} y ${partes[2]}`;
-        }
-
-        function buscarControles(edadObj) {
-            if (!edadObj || edadObj.totalMonths > 119) return [];
-            
-            return tablaControles.filter(c => {
-                const isAfterMin = edadObj.totalMonths > c.minM || (edadObj.totalMonths === c.minM && edadObj.days >= c.minD);
-                const isBeforeMax = edadObj.totalMonths < c.maxM || (edadObj.totalMonths === c.maxM && edadObj.days <= c.maxD);
-                return isAfterMin && isBeforeMax;
-            });
-        }
-
-        function mostrarError(msg) {
-            const box = document.getElementById('errorBox');
-            box.textContent = msg;
-            box.classList.remove('hidden');
-        }
-
-        function ocultarError() {
-            document.getElementById('errorBox').classList.add('hidden');
-        }
-
-        function preguntarLME() {
-            return new Promise(resolve => {
-                const modal = document.getElementById('modalLME');
-                const btnSi = document.getElementById('btnLmeSi');
-                const btnNo = document.getElementById('btnLmeNo');
-
-                const onClickSi = () => { cleanup(); resolve(true); };
-                const onClickNo = () => { cleanup(); resolve(false); };
-
-                btnSi.addEventListener('click', onClickSi);
-                btnNo.addEventListener('click', onClickNo);
-
-                modal.classList.remove('hidden');
-
-                function cleanup() {
-                    modal.classList.add('hidden');
-                    btnSi.removeEventListener('click', onClickSi);
-                    btnNo.removeEventListener('click', onClickNo);
-                }
-            });
-        }
-
-        async function calcularEdad() {
-            ocultarError();
-            const dobInput = document.getElementById('fechaNacimiento').value;
-            const evalInput = document.getElementById('fechaEvaluacion').value;
-            const semanas = parseInt(document.getElementById('semanas').value);
-            const dias = parseInt(document.getElementById('dias').value) || 0;
-
-            if (!dobInput || !evalInput || isNaN(semanas)) {
-                mostrarError("DATOS INCOMPLETOS: Por favor, complete todos los campos obligatorios.");
-                return;
-            }
-
-            const DOB = parseDateLocal(dobInput);
-            const EvalDate = parseDateLocal(evalInput);
-
-            if (EvalDate < DOB) {
-                mostrarError("ERROR DE FECHA: La fecha de evaluación no puede ser anterior a la fecha de nacimiento.");
-                return;
-            }
-
-            const edadCrono = calcularDiferencia(DOB, EvalDate);
-            document.getElementById('edadCronologica').textContent = formatEdad(edadCrono);
-
-            let clasificacion = "";
-            let limiteMeses = 0;
-            let criterioTexto = "";
-            let fechaCero = DOB; 
-
-            if (semanas >= 37) {
-                clasificacion = "Recién Nacido de Término";
-                criterioTexto = "No requiere corrección de edad.";
-                limiteMeses = 0;
-                fechaCero = DOB;
-            } else if (semanas < 32) {
-                clasificacion = "Prematuro Extremo";
-                criterioTexto = "Hasta los 24 meses de edad corregida.";
-                limiteMeses = 24;
-            } else if (semanas >= 32 && semanas <= 33) {
-                clasificacion = "Prematuro Moderado";
-                criterioTexto = "Hasta los 12 meses de edad corregida.";
-                limiteMeses = 12;
-            } else if (semanas >= 34 && semanas <= 36) {
-                clasificacion = "Prematuro Tardío";
-                criterioTexto = "Hasta los 6 meses de edad corregida.";
-                limiteMeses = 6;
-            }
-
-            document.getElementById('clasificacionTexto').textContent = clasificacion;
-            document.getElementById('criterioTexto').textContent = criterioTexto;
-
-            const diasFaltantes = (40 * 7) - ((semanas * 7) + dias);
-            const FPP = new Date(DOB.getTime() + (diasFaltantes * 24 * 60 * 60 * 1000));
-            
-            const edadCorregidaEl = document.getElementById('edadCorregida');
-            const estadoCorreccionEl = document.getElementById('estadoCorreccion');
-            
-            let edadEfectivaParaControl = edadCrono; 
-
-            if (semanas >= 37) {
-                edadCorregidaEl.textContent = "No aplica (Término)";
-                estadoCorreccionEl.textContent = "";
-            } else {
-                if (EvalDate < FPP) {
-                    const diasPostConcepcional = (semanas * 7) + dias + Math.floor((EvalDate - DOB) / (1000 * 60 * 60 * 24));
-                    const semPost = Math.floor(diasPostConcepcional / 7);
-                    const diasPost = diasPostConcepcional % 7;
-                    edadCorregidaEl.textContent = `${semPost} sem y ${diasPost} días (Post-concep.)`;
-                    estadoCorreccionEl.textContent = "Paciente en periodo post-concepcional (< 40 semanas).";
-                    estadoCorreccionEl.className = "text-primary font-bold uppercase text-xs tracking-wider";
-                    edadEfectivaParaControl = { years: 0, months: 0, totalMonths: 0, days: 0 }; 
-                    fechaCero = FPP;
-                } else {
-                    const edadCorregidaObj = calcularDiferencia(FPP, EvalDate);
-                    
-                    if (edadCorregidaObj.totalMonths >= limiteMeses) {
-                        edadCorregidaEl.textContent = formatEdad(edadCorregidaObj);
-                        estadoCorreccionEl.innerHTML = `<span class="text-red-600">⚠️ LÍMITE SUPERADO:</span> El paciente alcanzó los ${limiteMeses} meses. Ya no se debe corregir la edad. Evaluar con Edad Cronológica.`;
-                        estadoCorreccionEl.className = "text-dark font-bold text-xs uppercase tracking-wider";
-                        edadEfectivaParaControl = edadCrono;
-                        fechaCero = DOB;
-                    } else {
-                        edadCorregidaEl.textContent = formatEdad(edadCorregidaObj);
-                        estadoCorreccionEl.textContent = "✓ Edad dentro del periodo de corrección establecido.";
-                        estadoCorreccionEl.className = "text-secondary font-bold text-xs uppercase tracking-wider";
-                        edadEfectivaParaControl = edadCorregidaObj;
-                        fechaCero = FPP;
-                    }
-                }
-            }
-
-            // Renderizado de Agendamiento
-            const controlesEncontrados = buscarControles(edadEfectivaParaControl);
-            const panelAgendamiento = document.getElementById('panelAgendamiento');
-            panelAgendamiento.innerHTML = '';
-
-            if (controlesEncontrados.length === 0) {
-                panelAgendamiento.innerHTML = `<p class="text-dark font-sans font-medium text-base">No se encontraron controles programados para la edad actual en la tabla normativa o el paciente es mayor de 9 años.</p>`;
-            } else {
-                controlesEncontrados.forEach(c => {
-                    const div = document.createElement('div');
-                    div.className = "bg-bodyBg p-4 md:p-5 rounded-xl border border-gray-200 flex flex-col md:flex-row justify-between items-start md:items-center gap-3";
-                    div.innerHTML = `
-                        <div class="flex items-center">
-                            <span class="inline-block px-4 py-2 bg-primary text-white text-sm md:text-base font-heading font-bold rounded-lg uppercase tracking-wide">Control: ${c.csi}</span>
-                        </div>
-                        <div class="text-left md:text-right mt-2 md:mt-0">
-                            <span class="block text-lg md:text-xl font-heading font-black text-dark uppercase">TDA: <span class="text-primary">${c.tda}</span></span>
-                        </div>
-                    `;
-                    panelAgendamiento.appendChild(div);
-                });
-
-                const aplicaAlertaLME = controlesEncontrados.some(c => c.csi === "5 meses" || c.csi === "6 meses");
-                
-                if (aplicaAlertaLME) {
-                    const esLME = await preguntarLME();
-                    
-                    const esControl5 = controlesEncontrados.some(c => c.csi === "5 meses");
-                    const esControl6 = controlesEncontrados.some(c => c.csi === "6 meses");
-
-                    function addClinicalAge(date, months, days) {
-                        let f = new Date(date.getTime());
-                        f.setMonth(f.getMonth() + months);
-                        f.setDate(f.getDate() + days);
-                        return f;
-                    }
-                    
-                    function fmt(d) {
-                        return d.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' });
-                    }
-
-                    let recomendacionesHtml = '';
-
-                    if (esLME) {
-                        if (esControl5) {
-                            let desde5 = addClinicalAge(fechaCero, 5, 16);
-                            let hasta5 = addClinicalAge(fechaCero, 5, 29); 
-                            recomendacionesHtml += `<li>Agendar el <strong class="text-dark">control de 5 meses</strong> entre el <strong>${fmt(desde5)}</strong> y el <strong>${fmt(hasta5)}</strong>.</li>`;
-                        }
-                        if (esControl6) {
-                            let desde6 = addClinicalAge(fechaCero, 5, 21); 
-                            let hasta6 = addClinicalAge(fechaCero, 6, 15);
-                            recomendacionesHtml += `<li>Agendar el <strong class="text-dark">control de 6 meses</strong> entre el <strong>${fmt(desde6)}</strong> y el <strong>${fmt(hasta6)}</strong>.</li>`;
-                        }
-                    } else {
-                        if (esControl5) {
-                            let limite5 = addClinicalAge(fechaCero, 5, 16);
-                            recomendacionesHtml += `<li>Agendar el <strong class="text-dark">control de 5 meses</strong> <em>antes del</em> <strong>${fmt(limite5)}</strong>.</li>`;
-                        }
-                        if (esControl6) {
-                            let limite6 = addClinicalAge(fechaCero, 6, 15);
-                            recomendacionesHtml += `<li>Agendar el <strong class="text-dark">control de 6 meses</strong> <em>después del</em> <strong>${fmt(limite6)}</strong>.</li>`;
-                        }
-                    }
-
-                    const divAlerta = document.createElement('div');
-                    const textoTitulo = "Ajuste Sugerido por Alimentación (LME)";
-
-                    divAlerta.className = `mt-4 border-l-4 border-secondary bg-bodyBg p-4 md:p-5 rounded-r-xl flex gap-4 items-start shadow-sm`;
-                    divAlerta.innerHTML = `
-                        <div class="shrink-0 mt-0.5">
-                            <svg class="w-7 h-7 text-secondary" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.516 0c.85.493 1.509 1.333 1.509 2.316V18"></path></svg>
-                        </div>
-                        <div class="flex-1">
-                            <p class="text-sm font-heading font-bold mb-2 text-primary uppercase tracking-wider">${textoTitulo}</p>
-                            <ul class="list-disc pl-5 text-sm md:text-base space-y-2 text-dark font-sans font-medium">
-                                ${recomendacionesHtml}
-                            </ul>
-                        </div>
-                    `;
-                    panelAgendamiento.appendChild(divAlerta);
-                }
-            }
-
-            document.getElementById('resultados').classList.remove('hidden');
-        }
-    </script>
+    <button class="btn-calc" type="button" id="btnConfirmarAlimentacion">Mostrar orientación</button>
+  </div>
+</div>
+<footer class="app-footer">
+  Hecho por <strong>Dr. Ricardo Muñoz R.</strong> · Contacto: <a href="mailto:drmunozricardo@gmail.com">drmunozricardo@gmail.com</a>
+</footer>
+<script>
+'use strict';
+// Rangos y nombres de prestación transcritos de "TDA ciclo vital infantil.xlsx", carpeta Citas futuras.
+// Para SOME: no se muestran tamizajes o evaluaciones diagnósticas.
+const controles = [
+  {id:'diada',nombre:'Díada',prof:'Matrón/a',tda:'Control Binomio',dur:60,nom:0,minM:0,minD:0,maxM:0,maxD:28},
+  {id:'m1',nombre:'1 mes',prof:'Médico/a',tda:'Control sano 1 y 3 meses',dur:30,nom:1,minM:0,minD:28,maxM:1,maxD:20},
+  {id:'m2',nombre:'2 meses',prof:'Enfermera/o',tda:'Control sano 2 meses',dur:45,nom:2,minM:1,minD:21,maxM:2,maxD:20},
+  {id:'m3',nombre:'3 meses',prof:'Médico/a',tda:'Control sano 1 y 3 meses',dur:30,nom:3,minM:2,minD:21,maxM:3,maxD:20},
+  {id:'m4',nombre:'4 meses',prof:'Enfermera/o',tda:'Control Sano',dur:30,nom:4,minM:3,minD:21,maxM:4,maxD:29},
+  {id:'m5',nombre:'5 meses',prof:'Nutricionista',tda:'Control Sano',dur:30,nom:5,minM:5,minD:0,maxM:5,maxD:29},
+  {id:'m6',nombre:'6 meses',prof:'Enfermera/o',tda:'Control Sano',dur:30,nom:6,minM:5,minD:21,maxM:7,maxD:20},
+  {id:'m8',nombre:'8 meses',prof:'Enfermera/o',tda:'Control sano 8 meses',dur:45,nom:8,minM:7,minD:21,maxM:11,maxD:20},
+  {id:'m12',nombre:'12 meses',prof:'Enfermera/o',tda:'Control Sano',dur:30,nom:12,minM:11,minD:21,maxM:17,maxD:20},
+  {id:'m18',nombre:'18 meses',prof:'Enfermera/o',tda:'Control sano 18 meses',dur:50,nom:18,minM:17,minD:21,maxM:23,maxD:20},
+  {id:'m24',nombre:'2 años',prof:'Enfermera/o',tda:'Control Sano',dur:30,nom:24,minM:23,minD:21,maxM:35,maxD:20},
+  {id:'m36',nombre:'3 años',prof:'Enfermera/o',tda:'Control Sano 3 años',dur:60,nom:36,minM:35,minD:21,maxM:47,maxD:20},
+  {id:'m42',nombre:'3 años y 6 meses',prof:'Nutricionista',tda:'Control Sano',dur:30,nom:42,minM:42,minD:0,maxM:47,maxD:29},
+  {id:'m48',nombre:'4 años',prof:'Enfermera/o',tda:'Control Sano',dur:30,nom:48,minM:48,minD:0,maxM:59,maxD:29},
+  {id:'m60',nombre:'5 años',prof:'Enfermera/o',tda:'Control Sano',dur:30,nom:60,minM:60,minD:0,maxM:71,maxD:29},
+  {id:'m72',nombre:'6 años',prof:'Médico/a',tda:'Control Sano',dur:30,nom:72,minM:72,minD:0,maxM:83,maxD:29},
+  {id:'m84',nombre:'7 años',prof:'Enfermera/o',tda:'Control Sano',dur:30,nom:84,minM:84,minD:0,maxM:95,maxD:29},
+  {id:'m96',nombre:'8 años',prof:'Enfermera/o',tda:'Control Sano',dur:30,nom:96,minM:96,minD:0,maxM:107,maxD:29},
+  {id:'m108',nombre:'9 años',prof:'Médico/a',tda:'Control Sano',dur:30,nom:108,minM:108,minD:0,maxM:119,maxD:29}
+];
+const DAY=86400000;
+function utc(y,m,d){return new Date(Date.UTC(y,m,d));}
+function fromISO(s){
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(s||''))return null;
+  const a=s.split('-').map(Number),out=utc(a[0],a[1]-1,a[2]);
+  return out.getUTCFullYear()===a[0]&&out.getUTCMonth()===a[1]-1&&out.getUTCDate()===a[2]?out:null;
+}
+function toISO(d){return d.toISOString().slice(0,10);}
+function fmt(d){return d.toLocaleDateString('es-CL',{timeZone:'UTC',day:'2-digit',month:'2-digit',year:'numeric'});}
+function addDays(d,n){return new Date(d.getTime()+n*DAY);}
+function monthAddClamped(d,n){
+  const y=d.getUTCFullYear(),m=d.getUTCMonth(),original=d.getUTCDate();
+  const first=utc(y,m+n,1),end=utc(first.getUTCFullYear(),first.getUTCMonth()+1,0).getUTCDate();
+  return utc(first.getUTCFullYear(),first.getUTCMonth(),Math.min(original,end));
+}
+function addClinical(d,months,days){return addDays(monthAddClamped(d,months),days||0);}
+function diffAge(start,end){
+  if(end<start)return null;
+  let m=(end.getUTCFullYear()-start.getUTCFullYear())*12+end.getUTCMonth()-start.getUTCMonth();
+  if(monthAddClamped(start,m)>end)m--;
+  const anchor=monthAddClamped(start,m);
+  const days=Math.round((end-anchor)/DAY);
+  return {years:Math.floor(m/12),months:m%12,days:days,totalMonths:m};
+}
+function ageText(x){
+  if(!x)return 'Aún no corresponde';
+  const a=[];
+  if(x.years)a.push(x.years+' año'+(x.years===1?'':'s'));
+  if(x.months)a.push(x.months+' mes'+(x.months===1?'':'es'));
+  if(x.days||!a.length)a.push(x.days+' día'+(x.days===1?'':'s'));
+  return a.join(', ');
+}
+function intersects(a,b){return a.start<=b.end&&b.start<=a.end;}
+function joinSegments(list){
+  list.sort((a,b)=>a.start-b.start);
+  const result=[];
+  for(const s of list){
+    if(!result.length||s.start>addDays(result[result.length-1].end,1))result.push({start:s.start,end:s.end});
+    else if(s.end>result[result.length-1].end)result[result.length-1].end=s.end;
+  }
+  return result;
+}
+function controlSegments(c,ctx){
+  const segments=[];
+  const baseCorrected=ctx.fpp,baseChrono=ctx.dob;
+  function window(base){return {start:addClinical(base,c.minM,c.minD),end:addClinical(base,c.maxM,c.maxD)};}
+  if(!ctx.preterm)return [window(baseChrono)];
+  const cutoff=ctx.cutoff;
+  const corrected=window(baseCorrected);
+  const correctedEnd=addDays(cutoff,-1);
+  if(corrected.start<=correctedEnd){
+    const s={start:corrected.start,end:corrected.end<correctedEnd?corrected.end:correctedEnd};
+    if(s.start<=s.end)segments.push(s);
+  }
+  const chron=window(baseChrono);
+  const s={start:chron.start>cutoff?chron.start:cutoff,end:chron.end};
+  if(s.start<=s.end)segments.push(s);
+  return joinSegments(segments);
+}
+function controlItems(ctx){
+  return controles.map((c,i)=>{
+    const segments=controlSegments(c,ctx);
+    return {c,index:i,segments,first:segments.length?segments[0].start:null,last:segments.length?segments[segments.length-1].end:null,
+      current:segments.some(s=>ctx.fecha>=s.start&&ctx.fecha<=s.end),
+      upcoming:segments.filter(s=>s.start>ctx.fecha)};
+  });
+}
+function rangeText(segments){
+  if(!segments.length)return 'Fuera del período de edad aplicable';
+  return segments.map(s=>fmt(s.start)+' al '+fmt(s.end)).join(' · o bien ');
+}
+function safe(s){return String(s).replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));}
+function showError(s){const e=document.getElementById('errorBox');e.textContent=s;e.style.display='block';}
+function clearError(){const e=document.getElementById('errorBox');e.textContent='';e.style.display='none';}
+function renderControl(item,mode,ctx){
+  const c=item.c;
+  const segments=mode==='future'?item.upcoming:item.segments;
+  let objective='';
+  if(mode==='future'&&segments.length){
+    const preferred=ctx.preterm?ctx.fpp:ctx.dob;
+    const d=addClinical(preferred,c.nom,0);
+    const chosen=segments.find(s=>d>=s.start&&d<=s.end);
+    const date=chosen?d:segments[0].start;
+    objective='<p>Fecha objetivo orientativa: <strong class="date-detail">'+fmt(date)+'</strong></p>';
+  }
+  const badge=mode==='previous'?'Anterior':mode==='future'?'Próximo':'Vigente';
+  return '<article class="control '+safe(mode)+'">'+
+    '<div class="control-head"><h4>Control de '+safe(c.nombre)+'</h4><span class="tag '+(mode==='current'?'green':mode==='previous'?'gray':'')+'">'+badge+'</span></div>'+
+    '<p><strong>TDA Rayen:</strong> '+safe(c.tda)+'</p>'+
+    '<p><strong>Profesional:</strong> '+safe(c.prof)+' · <strong>Rendimiento:</strong> '+c.dur+' min</p>'+
+    '<p><strong>Ventana de agendamiento:</strong> <span class="date-detail">'+safe(rangeText(segments))+'</span></p>'+
+    objective+
+    '</article>';
+}
+function feedingDialog(ask5){
+  return new Promise(resolve=>{
+    const modal=document.getElementById('modalAlimentacion');
+    const prev=document.getElementById('preguntaControlPrevio');
+    prev.classList.toggle('hidden',!ask5);
+    document.querySelectorAll('input[name="alimentacion"]').forEach(r=>r.checked=false);
+    document.getElementById('control5Realizado').value='desconocido';
+    const button=document.getElementById('btnConfirmarAlimentacion');
+    const handler=()=>{
+      const selected=document.querySelector('input[name="alimentacion"]:checked');
+      if(!selected){window.alert('Seleccione el tipo de alimentación o marque No informado.');return;}
+      button.removeEventListener('click',handler);
+      modal.classList.add('hidden');
+      resolve({tipo:selected.value,previo:document.getElementById('control5Realizado').value});
+    };
+    button.addEventListener('click',handler);
+    modal.classList.remove('hidden');
+  });
+}
+function feedingAdvice(ctx,selection,matched){
+  if(!selection)return '';
+  const i5=matched.some(i=>i.c.id==='m5'),i6=matched.some(i=>i.c.id==='m6');
+  const base=ctx.preterm&&ctx.fecha<ctx.cutoff?ctx.fpp:ctx.dob;
+  function at(m,d){return fmt(addClinical(base,m,d));}
+  let lines=[];
+  if(selection.tipo==='lme'){
+    if(i5)lines.push('Control de 5 meses: referencia por LME entre '+at(5,16)+' y '+at(5,29)+'.');
+    if(i6)lines.push('Control de 6 meses: referencia por LME entre '+at(5,21)+' y '+at(6,15)+'.');
+  }else if(selection.tipo==='mixta'||selection.tipo==='formula'){
+    if(i5)lines.push('Control de 5 meses: referencia anterior al '+at(5,16)+'.');
+    if(i6)lines.push('Control de 6 meses: referencia posterior al '+at(6,15)+'.');
+  }else lines.push('Alimentación no informada: verificar antes de definir la fecha entre los controles de 5 y 6 meses.');
+  if(i5&&i6){
+    if(selection.previo==='si')lines.push('La familia indica control de 5 meses realizado: verificar registro y priorizar control pendiente.');
+    else if(selection.previo==='no')lines.push('La familia indica control de 5 meses pendiente: confirmar con equipo infantil antes de sustituirlo por control de 6 meses.');
+    else lines.push('No consta realización del control de 5 meses: revisar antecedentes en Rayen.');
+  }
+  return '<div class="notice"><strong>Orientación adicional por alimentación</strong><ul>'+lines.map(x=>'<li>'+safe(x)+'</li>').join('')+'</ul><small>Se mantiene la pauta local de la calculadora anterior; confirmar la pertinencia de la prestación en su ventana institucional.</small></div>';
+}
+async function calcular(event){
+  if(event)event.preventDefault();
+  clearError();
+  const dob=fromISO(document.getElementById('fechaNacimiento').value);
+  const fecha=fromISO(document.getElementById('fechaAgenda').value);
+  const sw=document.getElementById('semanas').value.trim(),sd=document.getElementById('dias').value.trim();
+  if(!dob||!fecha){showError('Ingrese una fecha de nacimiento y una fecha de agenda disponible válidas.');return;}
+  if(fecha<dob){showError('La fecha disponible no puede ser anterior al nacimiento.');return;}
+  if(fecha>addClinical(dob,121,0)){showError('Esta tabla está definida hasta los 9 años; revise la fecha y la edad del niño o niña.');return;}
+  if(sw===''&&sd!==''&&Number(sd)!==0){showError('Si ingresa días de gestación, debe ingresar también las semanas.');return;}
+  let semanas=40,dias=0,preterm=false;
+  if(sw!==''){
+    semanas=Number(sw);dias=sd===''?0:Number(sd);
+    if(!Number.isInteger(semanas)||semanas<20||semanas>42||!Number.isInteger(dias)||dias<0||dias>6){
+      showError('Edad gestacional inválida: ingrese entre 20 y 42 semanas y de 0 a 6 días.');return;
+    }
+    preterm=semanas<37;
+  }
+  const deficit=(40*7)-(semanas*7+dias);
+  const fpp=preterm?addDays(dob,deficit):dob;
+  let limite=0,clasificacion='Recién nacido de término';
+  if(preterm){
+    if(semanas<32){limite=24;clasificacion='Prematuro menor de 32 semanas';}
+    else if(semanas<=33){limite=12;clasificacion='Prematuro de 32 a 33 semanas';}
+    else {limite=6;clasificacion='Prematuro de 34 a 36 semanas';}
+  }
+  const cutoff=preterm?monthAddClamped(fpp,limite):dob;
+  const ctx={dob,fecha,fpp,preterm,cutoff,limite};
+  const ageCrono=diffAge(dob,fecha);
+  const ageCorr=preterm?diffAge(fpp,fecha):null;
+  let ageForControl=ageCrono;
+  let correctionMessage='';
+  if(!preterm)correctionMessage='No se aplica corrección de edad. Edad gestacional no informada: se asumió recién nacido de término.';
+  else if(fecha<fpp){
+    const pm=semanas*7+dias+Math.round((fecha-dob)/DAY);
+    correctionMessage='Antes de las 40 semanas postmenstruales ('+Math.floor(pm/7)+' semanas y '+pm%7+' días). Requiere definición individual del control.';
+  }else if(fecha>=cutoff){
+    correctionMessage='Período de corrección cumplido ('+limite+' meses corregidos). Para agendamiento se utiliza edad cronológica.';
+  }else{
+    ageForControl=ageCorr;
+    correctionMessage='Dentro del período de corrección. Los controles se calculan desde la fecha en que habría cumplido 40 semanas ('+fmt(fpp)+').';
+  }
+  document.getElementById('edadCronologica').textContent=ageText(ageCrono);
+  document.getElementById('edadCorregida').textContent=preterm?(fecha<fpp?'Aún no alcanza 40 semanas':ageText(ageCorr)):'No aplica (término)';
+  document.getElementById('clasificacionTexto').textContent='Clasificación: '+clasificacion;
+  document.getElementById('criterioTexto').textContent='Edad de referencia para esta fecha: '+(preterm&&fecha<fpp?'postmenstrual':preterm&&fecha<cutoff?'corregida':'cronológica')+' · '+ageText(ageForControl);
+  document.getElementById('estadoCorreccion').textContent=correctionMessage;
+  const items=controlItems(ctx);
+  const matched=items.filter(i=>i.current);
+  const previous=items.filter(i=>i.last&&i.last<fecha).sort((a,b)=>b.last-a.last);
+  const upcoming=items.filter(i=>i.upcoming.length).sort((a,b)=>a.upcoming[0].start-b.upcoming[0].start);
+  const actual=document.getElementById('panelActual'),anterior=document.getElementById('panelAnterior'),proximos=document.getElementById('panelProximos'),alerta=document.getElementById('alertaVentanas');
+  actual.innerHTML=matched.length?matched.map(i=>renderControl(i,'current',ctx)).join(''):
+    '<div class="alert">No hay control dentro de la ventana institucional para esta fecha. Revise el control solicitado y consulte al equipo antes de agendar.</div>';
+  anterior.innerHTML=previous.length?renderControl(previous[0],'previous',ctx)+
+    '<p class="info-line">Control anterior según la tabla. La aplicación desconoce si fue realizado: verificar registro en Rayen y solicitud de la familia.</p>':
+    '<p class="info-line">No se identifica un control anterior vencido dentro de esta tabla.</p>';
+  proximos.innerHTML=upcoming.length?upcoming.slice(0,3).map(i=>renderControl(i,'future',ctx)).join(''):
+    '<p class="info-line">No hay controles posteriores incluidos en la tabla de 0 a 9 años.</p>';
+  if(matched.length>1){
+    alerta.innerHTML='<div class="alert"><strong>Atención: ventanas superpuestas</strong>'+
+      'En la fecha '+fmt(fecha)+' corresponden '+matched.map(i=>'control de '+safe(i.c.nombre)).join(' y ')+
+      '. Confirme con la familia cuál solicita y revise en Rayen si se realizó el control previo. No sustituya automáticamente uno por otro.</div>';
+  }else if(!matched.length&&previous.length&&upcoming.length){
+    alerta.innerHTML='<div class="alert"><strong>Fecha entre ventanas de control</strong>Revise si se perdió la oportunidad del control anterior o si corresponde esperar el siguiente. No cambiar la prestación sin verificar la solicitud.</div>';
+  }else alerta.innerHTML='';
+  document.getElementById('initial').classList.add('hidden');
+  document.getElementById('resultados').style.display='block';
+  document.getElementById('panelAlimentacion').innerHTML='';
+  if(matched.some(i=>i.c.id==='m5'||i.c.id==='m6')){
+    const selection=await feedingDialog(matched.some(i=>i.c.id==='m5')&&matched.some(i=>i.c.id==='m6'));
+    document.getElementById('panelAlimentacion').innerHTML=feedingAdvice(ctx,selection,matched);
+  }
+}
+function hoyChile(){
+  const parts=new Intl.DateTimeFormat('en-US',{timeZone:'America/Santiago',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+  const o={};parts.forEach(p=>o[p.type]=p.value);
+  return o.year+'-'+o.month+'-'+o.day;
+}
+function limpiar(){
+  document.getElementById('agenda-form').reset();
+  document.getElementById('fechaAgenda').value=hoyChile();
+  document.getElementById('initial').classList.remove('hidden');
+  document.getElementById('resultados').style.display='none';
+  document.getElementById('modalAlimentacion').classList.add('hidden');
+  clearError();
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('fechaAgenda').value=hoyChile();
+  document.getElementById('agenda-form').addEventListener('submit',calcular);
+  document.getElementById('btnLimpiar').addEventListener('click',limpiar);
+});
+</script>
 </body>
 </html>
